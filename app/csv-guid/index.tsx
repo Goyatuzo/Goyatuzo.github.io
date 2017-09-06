@@ -1,9 +1,9 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import JsonGuid from './container';
+import CsvGuidContainer from './container';
 
 ReactDOM.render(
-    <JsonGuid />,
+    <CsvGuidContainer />,
     document.getElementById("root")
 );

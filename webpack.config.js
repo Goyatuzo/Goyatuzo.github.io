@@ -3,7 +3,7 @@ var path = require('path');
 module.exports = {
     entry: {
         'tic-tac-toe': './app/tic-tac-toe/index.tsx',
-        'json-guid': './app/json-guid/index.tsx'
+        'csv-guid': './app/csv-guid/index.tsx'
     },
     output: {
         filename: "[name].js",

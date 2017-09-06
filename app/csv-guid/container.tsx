@@ -11,7 +11,7 @@ interface IJsonGuidContainerState {
 
 };
 
-export default class JsonGuidContainer extends React.Component<IJsonGuidContainerProps, IJsonGuidContainerState> {
+export default class CsvGuidContainer extends React.Component<IJsonGuidContainerProps, IJsonGuidContainerState> {
     render() {
         return (
             <div>
