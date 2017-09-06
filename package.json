@@ -20,14 +20,14 @@
   "homepage": "https://github.com/Goyatuzo/goyatuzo.github.io#readme",
   "dependencies": {
     "@types/lodash": "^4.14.64",
-    "@types/react": "^15.0.24",
-    "@types/react-dom": "^15.5.0",
+    "@types/react": "^15.6.0",
+    "@types/react-dom": "^15.5.4",
     "lodash": "^4.17.4",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "source-map-loader": "^0.2.1",
     "ts-loader": "^2.0.3",
-    "typescript": "^2.3.2",
-    "webpack": "^2.5.1"
+    "typescript": "^2.5.2",
+    "webpack": "^3.5.5"
   }
 }

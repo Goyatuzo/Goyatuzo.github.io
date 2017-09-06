@@ -1,9 +1,12 @@
 var path = require('path');
 
 module.exports = {
-    entry: './app/tic-tac-toe/index.tsx',
+    entry: {
+        'tic-tac-toe': './app/tic-tac-toe/index.tsx',
+        'json-guid': './app/json-guid/index.tsx'
+    },
     output: {
-        filename: "tic-tac-toe.js",
+        filename: "[name].js",
         path: path.resolve(__dirname, "dist")
     },
 
