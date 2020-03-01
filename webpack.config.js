@@ -1,35 +1,58 @@
-var path = require('path');
+/// <binding AfterBuild='Run - Development' />
 
-module.exports = {
-    entry: {
-        'tic-tac-toe': './app/tic-tac-toe/index.tsx',
-        'csv-guid': './app/csv-guid/index.tsx'
-    },
-    output: {
-        filename: "[name].js",
-        path: path.resolve(__dirname, "dist")
-    },
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-    devtool: 'source-map',
+module.exports = [
+    {
+        mode: 'development',
+        entry: {
+            lcs: './apps/lcs/index',
+            css: './styles/main.scss'
+        },
+        output: {
+            filename: '[name].js',
+            path: __dirname + '/dist/'
+        },
+        resolve: {
+            extensions: ['.ts', '.tsx', '.js']
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.tsx?$/,
+                    loader: 'ts-loader',
+                    exclude: /node_modules/
+                },
+                {
+                    test: /\.scss$/,
+                    use: [
+                        // fallback to style-loader in development
+                        MiniCssExtractPlugin.loader,
+                        "css-loader",
+                        "sass-loader"
+                    ]
+                }
+            ]
+        },
+        plugins: [
+            new webpack.ProvidePlugin({
+                Promise: 'es6-promise'
+            }),
 
-    resolve: {
-        // Add '.ts' and '.tsx' as resolvable extensions.
-        extensions: [".ts", ".tsx", ".js"]
-    },
+            new MiniCssExtractPlugin({
+                // Options similar to the same options in webpackOptions.output
+                // both options are optional
+                filename: "main.css",
+                chunkFilename: "[id].css"
+            }),
 
-    module: {
-        rules: [
-            {
-                test: /\.tsx?$/,
-                loader: "ts-loader",
-                exclude: /node_modules/
-            },
-            {
-                enforce: "pre",
-                test: /\.tsx?$/,
-                use: "source-map-loader",
-                exclude: /node_modules/
-            }
+            new HtmlWebpackPlugin({
+                hash: true,
+                template: './pages/lcs.html',
+                filename: 'lcs.html'
+            })
         ]
     }
-};
+]
