@@ -52,7 +52,7 @@ export default function reducer(state: LCSState = defaultState, action: LCSActio
 
             for (let i = 1; i < state.stringTwo.length + 1; ++i) {
                 for (let j = 1; j < state.stringOne.length + 1; ++j) {
-                    if (state.stringOne[i - 1] === state.stringTwo[j - 1]) {
+                    if (state.stringOne[j - 1] === state.stringTwo[i - 1]) {
                         table[i][j] = {
                             length: table[i - 1][j - 1].length + 1,
                             direction: LCSDirection.DIAG
