@@ -7,6 +7,7 @@ import { LCSState } from '../../redux/reducers';
 
 interface LCSTableProps {
     table: LCSTable;
+    secondString: string;
 }
 
 const LCSTableView: React.StatelessComponent<LCSTableProps> = props => {
@@ -15,7 +16,7 @@ const LCSTableView: React.StatelessComponent<LCSTableProps> = props => {
             <LCSTableHeader />
             <tbody>
                 {
-                    Object.keys(props.table).map(key => <LCSTableRow key={key} values={props.table[key]} />)
+                    Object.keys(props.table).map(key => <LCSTableRow key={key} char={props.secondString[key]} values={props.table[key]} />)
                 }
             </tbody>
         </table>
@@ -24,7 +25,8 @@ const LCSTableView: React.StatelessComponent<LCSTableProps> = props => {
 
 function mapStateToProps(state: LCSState): LCSTableProps {
     return {
-        table: state.cells
+        table: state.cells,
+        secondString: state.stringTwo
     }
 }
 
