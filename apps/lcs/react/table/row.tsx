@@ -2,7 +2,6 @@ import * as React from 'react';
 import { LCSDPCell } from '../../redux/classes/dp-cell';
 
 interface LCSTableRowProps {
-    columnNumber: number
     values: { [column: number]: LCSDPCell };
 }
 
