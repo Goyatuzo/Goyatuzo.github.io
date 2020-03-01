@@ -19,18 +19,18 @@
   },
   "homepage": "https://github.com/Goyatuzo/goyatuzo.github.io#readme",
   "dependencies": {
-    "@types/lodash": "^4.14.64",
-    "@types/react": "^15.6.0",
-    "@types/react-dom": "^15.5.4",
-    "@types/react-redux": "^5.0.6",
-    "lodash": "^4.17.4",
-    "react": "^15.5.4",
-    "react-dom": "^15.5.4",
-    "react-redux": "^5.0.6",
-    "redux": "^3.7.2",
-    "source-map-loader": "^0.2.1",
-    "ts-loader": "^2.0.3",
-    "typescript": "^2.5.2",
-    "webpack": "^3.5.5"
+    "react": "16.13.0",
+    "react-dom": "16.13.0",
+    "react-redux": "7.2.0",
+    "redux": "4.0.5",
+    "ts-loader": "6.2.1",
+    "typescript": "3.8.3",
+    "webpack": "4.41.6",
+    "webpack-cli": "3.3.11"
+  },
+  "devDependencies": {
+    "@types/react": "16.9.23",
+    "@types/react-dom": "16.9.5",
+    "@types/react-redux": "7.1.7"
   }
 }
