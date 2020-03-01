@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
+
 module.exports = [
     {
         mode: 'development',
@@ -51,7 +52,40 @@ module.exports = [
             new HtmlWebpackPlugin({
                 hash: true,
                 template: './pages/lcs.html',
-                filename: 'lcs.html'
+                filename: 'pages/lcs.html'
+            })
+        ]
+    },
+    {
+        mode: 'development',
+        entry: {
+            css: './styles/main.scss'
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.scss$/,
+                    use: [
+                        // fallback to style-loader in development
+                        MiniCssExtractPlugin.loader,
+                        "css-loader",
+                        "sass-loader"
+                    ]
+                }
+            ]
+        },
+        plugins: [
+            new MiniCssExtractPlugin({
+                // Options similar to the same options in webpackOptions.output
+                // both options are optional
+                filename: "main.css",
+                chunkFilename: "[id].css"
+            }),
+
+            new HtmlWebpackPlugin({
+                hash: true,
+                template: './index.html',
+                filename: 'index.html'
             })
         ]
     }
