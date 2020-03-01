@@ -45,7 +45,10 @@ export default function reducer(state: LCSState = defaultState, action: LCSActio
                             direction: LCSDirection.UP
                         }
                     } else if (state.stringOne[i] === state.stringTwo[j]) {
-                        table[i][j] = table[i - 1][j - 1];
+                        table[i][j] = {
+                            length: table[i - 1][j - 1].length + 1,
+                            direction: LCSDirection.DIAG
+                        }
                     } else {
                         const bigger = Math.max(table[i - 1][j].length, table[i][j - 1].length);
 
