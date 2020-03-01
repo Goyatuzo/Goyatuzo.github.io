@@ -33,30 +33,41 @@ export default function reducer(state: LCSState = defaultState, action: LCSActio
 
             let table: LCSTable = {};
 
-            for (let i = 0; i < state.stringOne.length + 1; ++i) {
-                for (let j = 0; j < state.stringTwo.length + 1; ++j) {
-                    if (!table[i]) {
-                        table[i] = {};
+            // Initialize column and row to 0 for base cases
+            for (let i = 0; i < state.stringTwo.length + 1; ++i) {
+                table[i] = {
+                    0: {
+                        length: 0,
+                        direction: LCSDirection.LEFT
                     }
+                };
+            }
 
-                    if (i == 0 || j == 0) {
-                        table[i][j] = {
-                            length: 0,
-                            direction: LCSDirection.UP
-                        }
-                    } else if (state.stringOne[i] === state.stringTwo[j]) {
+            for (let i = 0; i < state.stringOne.length + 1; ++i) {
+                table[0][i] = {
+                    length: 0,
+                    direction: LCSDirection.UP
+                }
+            }
+
+            for (let i = 1; i < state.stringTwo.length + 1; ++i) {
+                for (let j = 1; j < state.stringOne.length + 1; ++j) {
+                    if (state.stringOne[i - 1] === state.stringTwo[j - 1]) {
                         table[i][j] = {
                             length: table[i - 1][j - 1].length + 1,
                             direction: LCSDirection.DIAG
                         }
                     } else {
-                        const bigger = Math.max(table[i - 1][j].length, table[i][j - 1].length);
+                        const topCell = table[i - 1][j];
+                        const leftCell = table[i][j - 1];
 
-                        if (bigger === table[i][j - 1].length) {
-                            table[i][j] = table[i][j - 1];
+                        const bigger = Math.max(topCell.length, leftCell.length);
+
+                        if (bigger === leftCell.length) {
+                            table[i][j] = leftCell;
                             table[i][j].direction = LCSDirection.UP;
                         } else {
-                            table[i][j] = table[i - 1][j];
+                            table[i][j] = topCell;
                             table[i][j].direction = LCSDirection.LEFT;
                         }
                     }
