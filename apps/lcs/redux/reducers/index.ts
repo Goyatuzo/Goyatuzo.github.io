@@ -1,7 +1,7 @@
 import { LCSAction, LCSActionType } from '../actions/actiontype';
 import { LCSDPCell, LCSDirection } from '../classes/dp-cell';
+import { LCSTable } from '../classes/table';
 
-type LCSTable = { [row: number]: { [column: number]: LCSDPCell } };
 
 export interface LCSState {
     stringOne: string;
