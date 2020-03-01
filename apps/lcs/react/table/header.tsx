@@ -11,8 +11,9 @@ const LCSTableHeaderView: React.StatelessComponent<StateToProps> = props => {
         <thead>
             <tr>
                 <th></th>
+                <th></th>
                 {
-                    props.headerString.split('').map(char => <td>{char}</td>)
+                    props.headerString.split('').map((char, idx) => <td key={idx}>{char}</td>)
                 }
             </tr>
         </thead>

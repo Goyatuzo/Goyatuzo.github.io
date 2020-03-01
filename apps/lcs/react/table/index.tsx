@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import LCSTableHeader from './header';
 
 
-const LCSTable: React.StatelessComponent<LCSState> = props => {
+const LCSTableView: React.StatelessComponent<LCSState> = props => {
     return (
         <table className="ui celled table">
             <LCSTableHeader />
@@ -16,4 +16,6 @@ function mapStateToProps(state: LCSState) {
     return state;
 }
 
-export default connect(mapStateToProps)(LCSTable);
+const LCSTable = connect(mapStateToProps)(LCSTableView);
+
+export default LCSTable

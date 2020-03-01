@@ -11,7 +11,14 @@ export interface LCSState {
     cells: LCSTable;
 }
 
-export default function reducer(state: LCSState = null, action: LCSAction) {
+const defaultState: LCSState = {
+    stringOne: 'ACTVBD',
+    stringTwo: 'REWACTD',
+    error: null,
+    cells: null
+}
+
+export default function reducer(state: LCSState = defaultState, action: LCSAction) {
     switch (action.type) {
         case LCSActionType.SET_STRING_ONE:
             return { ...state, stringOne: action.value };

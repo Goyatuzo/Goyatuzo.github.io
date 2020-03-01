@@ -1,8 +1,9 @@
 import * as React from 'react';
+import LCSTable from './react/table';
 
 const LCSApp: React.StatelessComponent<{}> = props => {
     return (
-        <div>TESTING</div>
+        <LCSTable />
     )
 }
 
