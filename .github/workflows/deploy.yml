@@ -1,5 +1,8 @@
 name: Build and Deploy
-on: [push]
+on:
+  push:	
+    branches:	
+      - dev
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -10,12 +13,9 @@ jobs:
         persist-credentials: false
 
     - name: Build and Deploy
-      on:
-        push:	
-          branches:	
-            - dev
+
       uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         BRANCH: master # The branch the action should deploy to.
-    FOLDER: dist # The folder the action should deploy.
+        FOLDER: dist # The folder the action should deploy.
