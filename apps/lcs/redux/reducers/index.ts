@@ -38,7 +38,8 @@ export default function reducer(state: LCSState = defaultState, action: LCSActio
                 table[i] = {
                     0: {
                         length: 0,
-                        direction: LCSDirection.LEFT
+                        direction: LCSDirection.LEFT,
+                        isSubsequence: false
                     }
                 };
             }
@@ -46,7 +47,8 @@ export default function reducer(state: LCSState = defaultState, action: LCSActio
             for (let i = 0; i < state.stringOne.length + 1; ++i) {
                 table[0][i] = {
                     length: 0,
-                    direction: LCSDirection.UP
+                    direction: LCSDirection.UP,
+                    isSubsequence: false
                 }
             }
 
@@ -55,7 +57,8 @@ export default function reducer(state: LCSState = defaultState, action: LCSActio
                     if (state.stringOne[j - 1] === state.stringTwo[i - 1]) {
                         table[i][j] = {
                             length: table[i - 1][j - 1].length + 1,
-                            direction: LCSDirection.DIAG
+                            direction: LCSDirection.DIAG,
+                            isSubsequence: false
                         }
                     } else {
                         const topCell = table[i - 1][j];
@@ -75,6 +78,40 @@ export default function reducer(state: LCSState = defaultState, action: LCSActio
             }
 
             return { ...state, error: null, cells: table };
+
+        case LCSActionType.CALCULATE_SEQUENCE:
+            if (!state.cells) {
+                return state;
+            }
+
+            let rowCount = Object.keys(state.cells).length - 1;
+            let columnCount = Object.keys(state.cells[0]).length - 1;
+
+            let cpy: LCSTable = {};
+
+            for (let i = 0; i < rowCount; ++i) {
+                cpy[i] = { ...state.cells[i] };
+            }
+
+            while (rowCount > 0 && columnCount > 0) {
+                cpy[rowCount][columnCount].isSubsequence = true;
+                switch (cpy[rowCount][columnCount].direction) {
+                    case LCSDirection.DIAG:
+                        rowCount--;
+                        columnCount--;
+                        break;
+                    case LCSDirection.UP:
+                        rowCount--;
+                        break;
+                    case LCSDirection.LEFT:
+                        columnCount--;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return { ...state, cells: cpy };
 
         default:
             return state;

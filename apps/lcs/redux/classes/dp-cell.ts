@@ -7,4 +7,5 @@ export enum LCSDirection {
 export interface LCSDPCell {
     length: number;
     direction: LCSDirection;
+    isSubsequence: boolean;
 }
