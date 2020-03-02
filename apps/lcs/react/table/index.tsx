@@ -16,7 +16,7 @@ const LCSTableView: React.StatelessComponent<LCSTableProps> = props => {
             <LCSTableHeader />
             <tbody>
                 {
-                    Object.keys(props.table).map(key => <LCSTableRow key={key} char={props.secondString[key]} values={props.table[key]} />)
+                    Object.keys(props.table).map(key => key === '0' ? <LCSTableRow key={key} char={""} values={props.table[key]} /> : <LCSTableRow key={key} char={props.secondString[parseInt(key) - 1]} values={props.table[key]} />)
                 }
             </tbody>
         </table>
