@@ -23,7 +23,15 @@ const stringInput: React.StatelessComponent<InputProps> = props => {
     }
 
     return (
-        <input value={props.storedValue} onChange={updateString}></input>
+        <div className="ui left labeled left icon input">
+            <i className="tags icon"></i>
+            <input value={props.storedValue} onChange={updateString}></input>
+            <a className="ui tag label">
+                {
+                    props.dataName === "first" ? "String 1" : "String 2"
+                }
+            </a>
+        </div>
     )
 }
 
