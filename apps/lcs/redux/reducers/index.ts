@@ -64,11 +64,11 @@ export default function reducer(state: LCSState = defaultState, action: LCSActio
                         const bigger = Math.max(topCell.length, leftCell.length);
 
                         if (bigger === leftCell.length) {
-                            table[i][j] = leftCell;
-                            table[i][j].direction = LCSDirection.UP;
-                        } else {
-                            table[i][j] = topCell;
+                            table[i][j] = { ...leftCell };
                             table[i][j].direction = LCSDirection.LEFT;
+                        } else {
+                            table[i][j] = { ...topCell };
+                            table[i][j].direction = LCSDirection.UP;
                         }
                     }
                 }
