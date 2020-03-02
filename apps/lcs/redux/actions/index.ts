@@ -13,3 +13,17 @@ export function calculateSubsequence(): LCSAction {
         value: null
     }
 }
+
+export function updateFirstString(str: string): LCSAction {
+    return {
+        type: LCSActionType.SET_STRING_ONE,
+        value: str
+    }
+}
+
+export function updateSecondString(str: string): LCSAction {
+    return {
+        type: LCSActionType.SET_STRING_TWO,
+        value: str
+    }
+}
