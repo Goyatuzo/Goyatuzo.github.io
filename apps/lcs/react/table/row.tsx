@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { LCSDPCell } from '../../redux/classes/dp-cell';
 
+import LCSTableCell from './cell';
+
 interface LCSTableRowProps {
     char: string;
     values: { [column: number]: LCSDPCell };
@@ -11,7 +13,7 @@ const LCSTableRow: React.StatelessComponent<LCSTableRowProps> = props => {
         <tr>
             <td>{props.char}</td>
             {
-                props.values ? Object.keys(props.values).map(key => <td key={key}>{props.values[key].length}</td>) : <td></td>
+                Object.keys(props.values).map(key => <LCSTableCell key={key} {...props.values[key]} />)
             }
         </tr>
     )
