@@ -6,10 +6,11 @@ import { Provider } from 'react-redux';
 
 import reducer from './redux/reducers';
 import LCSApp from './app';
-import { calculate } from './redux/actions';
+import { calculate, calculateSubsequence } from './redux/actions';
 
 const store = createStore(reducer);
 
 store.dispatch(calculate());
+store.dispatch(calculateSubsequence());
 
 render(<Provider store={store}><LCSApp /></Provider>, document.getElementById('lcs-app'));

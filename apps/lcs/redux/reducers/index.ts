@@ -89,8 +89,14 @@ export default function reducer(state: LCSState = defaultState, action: LCSActio
 
             let cpy: LCSTable = {};
 
-            for (let i = 0; i < rowCount; ++i) {
-                cpy[i] = { ...state.cells[i] };
+            for (let i = 0; i <= rowCount; ++i) {
+                for (let j = 0; j <= columnCount; ++j) {
+                    if (!cpy[i]) {
+                        cpy[i] = { ...state.cells[i] };
+                    } else {
+                        cpy[i][j] = { ...state.cells[i][j] };
+                    }
+                }
             }
 
             while (rowCount > 0 && columnCount > 0) {

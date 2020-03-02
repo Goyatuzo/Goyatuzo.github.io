@@ -21,7 +21,7 @@ const LCSCell: React.StatelessComponent<LCSTableCellProps> = props => {
     }
 
     return (
-        <td>{props.length} {arrow}</td>
+        <td className={props.isSubsequence ? "green" : ""} >{props.length} {arrow}</td>
     )
 }
 

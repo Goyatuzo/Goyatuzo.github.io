@@ -6,3 +6,10 @@ export function calculate(): LCSAction {
         value: null
     }
 }
+
+export function calculateSubsequence(): LCSAction {
+    return {
+        type: LCSActionType.CALCULATE_SEQUENCE,
+        value: null
+    }
+}
