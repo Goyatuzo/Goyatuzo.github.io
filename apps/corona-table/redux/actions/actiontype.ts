@@ -1,7 +1,7 @@
 import { Action } from 'redux';
 
 export enum CrnTableActionType {
-    STORE_DATA
+    STORE_CONFIRMED
 }
 
 export interface CrnTableAction<T = any> extends Action<CrnTableActionType> {

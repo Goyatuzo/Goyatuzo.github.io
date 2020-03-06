@@ -1,4 +1,9 @@
 import * as React from 'react';
 import { render } from 'react-dom';
+import { Provider } from 'react-redux';
 
-render(<div>TEST</div>, document.getElementById('corona-table-app'));
+import store from './redux';
+
+render(<Provider store={store}>
+    <div>TEST</div>
+</Provider>, document.getElementById('corona-table-app'));
