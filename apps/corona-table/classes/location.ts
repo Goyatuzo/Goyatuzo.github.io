@@ -3,10 +3,11 @@ export interface CrnLocation {
     country: string;
     lat: number;
     long: number;
-    statistics: CrnStats;
+    statistics: { [dateInMs: number]: CrnStats };
 }
 
 export interface CrnStats {
+    dateInMs: number;
     confirmed: number;
     deaths: number;
     recovered: number;
