@@ -10,7 +10,8 @@ module.exports = [
         mode: 'development',
         entry: {
             lcs: './apps/lcs/index',
-            css: './styles/main.scss'
+            css: './styles/main.scss',
+            crnt: './apps/corona-table/index'
         },
         output: {
             filename: '[name].js',
@@ -53,6 +54,12 @@ module.exports = [
                 hash: true,
                 template: './pages/lcs.html',
                 filename: 'pages/lcs.html'
+            }),
+
+            new HtmlWebpackPlugin({
+                hash: true,
+                template: './pages/corona-table.html',
+                filename: 'pages/corona-table.html'
             })
         ]
     },
