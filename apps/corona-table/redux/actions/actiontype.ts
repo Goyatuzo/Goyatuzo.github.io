@@ -1,6 +1,7 @@
 import { Action } from 'redux';
 
 export enum CrnTableActionType {
+    REQUEST_CONFIRMED,
     STORE_CONFIRMED
 }
 
