@@ -60,7 +60,7 @@ module.exports = [
         mode: 'development',
         entry: {
             css: './styles/main.scss',
-            crnt: './apps/corona-table/index'
+            crnt: './apps/corona/index'
         },
         output: {
             filename: '[name].js',
@@ -101,8 +101,8 @@ module.exports = [
 
             new HtmlWebpackPlugin({
                 hash: true,
-                template: './pages/corona-table.html',
-                filename: 'pages/corona-table.html'
+                template: './pages/corona-graph.html',
+                filename: 'pages/corona-graph.html'
             })
         ]
     },
