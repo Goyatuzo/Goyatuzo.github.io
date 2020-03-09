@@ -8,5 +8,7 @@ import store from './redux';
 import CoronaHistoricGraph from './react/historic-graph';
 
 render(<Provider store={store}>
-    <CoronaHistoricGraph />
+    <div className="ui container">
+        <CoronaHistoricGraph />
+    </div>
 </Provider>, document.getElementById('corona-table-app'));
