@@ -53,8 +53,6 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
             }
         }
 
-        console.log(confirmed.length);
-
         return [{
             label: 'Confirmed',
             data: confirmed,
