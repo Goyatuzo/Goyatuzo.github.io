@@ -19,23 +19,31 @@
   },
   "homepage": "https://github.com/Goyatuzo/goyatuzo.github.io#readme",
   "dependencies": {
+    "axios": "0.19.2",
+    "chart.js": "2.9.3",
+    "csvtojson": "2.0.10",
+    "es6-promise": "4.2.8",
     "react": "16.13.0",
     "react-dom": "16.13.0",
     "react-redux": "7.2.0",
     "redux": "4.0.5",
+    "redux-thunk": "2.3.0",
     "ts-loader": "6.2.1",
     "typescript": "3.8.3",
-    "webpack": "4.41.6",
     "webpack-cli": "3.3.11"
   },
   "devDependencies": {
+    "@types/chart.js": "2.9.15",
     "@types/react": "16.9.23",
     "@types/react-dom": "16.9.5",
     "@types/react-redux": "7.1.7",
     "css-loader": "3.4.2",
+    "fibers": "4.0.2",
     "html-webpack-plugin": "3.2.0",
     "mini-css-extract-plugin": "0.9.0",
     "node-sass": "4.13.1",
-    "sass-loader": "8.0.2"
+    "sass": "1.26.2",
+    "sass-loader": "8.0.2",
+    "webpack": "4.42.0"
   }
 }
