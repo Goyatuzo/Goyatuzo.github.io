@@ -3,11 +3,15 @@ import { CrnTableAction, CrnTableActionType } from '../actions/actiontype';
 
 export interface CrnTableState {
     requestingConfirmed: boolean;
+    requestingDeaths: boolean;
+    requestingRecovered: boolean;
     locations: CrnLocation[];
 }
 
 const defaultState: CrnTableState = {
     requestingConfirmed: false,
+    requestingDeaths: false,
+    requestingRecovered: false,
     locations: []
 }
 
@@ -53,14 +57,20 @@ export default function reducer(state = defaultState, action: CrnTableAction) {
         case CrnTableActionType.REQUEST_CONFIRMED: {
             return { ...state, requestingConfirmed: true };
         }
+        case CrnTableActionType.REQUEST_DEATHS: {
+            return { ...state, requestingDeaths: true };
+        }
+        case CrnTableActionType.REQUEST_RECOVERED: {
+            return { ...state, requestingRecovered: true };
+        }
         case CrnTableActionType.STORE_CONFIRMED: {
-            return { ...state, locations: updateField(state.locations, action.value.value, action.value.headers, "confirmed") };
+            return { ...state, requestingConfirmed: false, locations: updateField(state.locations, action.value.value, action.value.headers, "confirmed") };
         }
         case CrnTableActionType.STORE_DEATHS: {
-            return { ...state, locations: updateField(state.locations, action.value.value, action.value.headers, "deaths") };
+            return { ...state, requestingDeaths: false, locations: updateField(state.locations, action.value.value, action.value.headers, "deaths") };
         }
         case CrnTableActionType.STORE_RECOVERED: {
-            return { ...state, locations: updateField(state.locations, action.value.value, action.value.headers, "recovered") };
+            return { ...state, requestingRecovered: false, locations: updateField(state.locations, action.value.value, action.value.headers, "recovered") };
         }
         default:
             return state;
