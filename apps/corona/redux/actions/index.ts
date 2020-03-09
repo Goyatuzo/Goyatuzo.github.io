@@ -23,6 +23,20 @@ function storeConfirmedData(value, headers: string[]): CrnTableAction {
     }
 }
 
+function requestRecoveredData(): CrnTableAction {
+    return {
+        type: CrnTableActionType.REQUEST_RECOVERED,
+        value: null
+    }
+}
+
+function requestDeathsData(): CrnTableAction {
+    return {
+        type: CrnTableActionType.REQUEST_DEATHS,
+        value: null
+    }
+}
+
 export function fetchConfirmedData() {
     return (dispatch: ThunkDispatch<any, any, CrnTableAction>, getState: () => CrnTableState) => {
         dispatch(requestConfirmedData());
@@ -35,8 +49,6 @@ export function fetchConfirmedData() {
 
                 dispatch(storeConfirmedData(data, headers));
             });
-
-
         }).catch(err => {
             console.error(err);
         });

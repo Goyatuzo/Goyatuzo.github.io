@@ -55,6 +55,12 @@ export default function reducer(state = defaultState, action: CrnTableAction) {
         case CrnTableActionType.STORE_CONFIRMED: {
             return { ...state, locations: updateField(state.locations, action.value.value, action.value.headers, "confirmed") };
         }
+        case CrnTableActionType.STORE_DEATHS: {
+            return { ...state, locations: updateField(state.locations, action.value.value, action.value, "deaths") };
+        }
+        case CrnTableActionType.STORE_DEATHS: {
+            return { ...state, locations: updateField(state.locations, action.value.value, action.value, "recovered") };
+        }
         default:
             return state;
     }
