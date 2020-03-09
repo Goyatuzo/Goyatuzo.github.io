@@ -12,43 +12,43 @@ const defaultState: CrnTableState = {
 }
 
 function updateField(locations: CrnLocation[], data: string[][], headers: string[], fieldToUpdate: keyof CrnStats): CrnLocation[] {
-    let updatedState: CrnLocation[] = JSON.parse(JSON.stringify(locations));
+    let updatedLocations: CrnLocation[] = JSON.parse(JSON.stringify(locations));
 
-    if (locations.length === 0) {
-        for (let i = 1; i < data.length; ++i) {
-            const row = data[i];
+    for (let i = 0; i < data.length; ++i) {
+        const row = data[i];
 
-            let newLocation: CrnLocation = {
-                province: row[0],
-                country: row[1],
-                lat: parseInt(row[2]),
-                long: parseInt(row[3]),
-                statistics: {}
-            };
+        let newLocation: CrnLocation = updatedLocations[i] ?? {
+            province: row[0],
+            country: row[1],
+            lat: parseInt(row[2]),
+            long: parseInt(row[3]),
+            statistics: {}
+        };
 
-            for (let j = 4; j < data[i].length; ++j) {
-                const dateTokens = headers[j].split('/').map(tkn => parseInt(tkn));
+        for (let j = 4; j < data[i].length; ++j) {
+            const dateTokens = headers[j].split('/').map(tkn => parseInt(tkn));
 
-                const date = new Date(parseInt(`20${dateTokens[2]}`), dateTokens[0] - 1, dateTokens[1]);
-                if (!newLocation.statistics[date.getTime()]) {
-                    newLocation.statistics[date.getTime()] = {
-                        dateInMs: date.getTime(),
-                        deaths: 0,
-                        confirmed: 0,
-                        recovered: 0
-                    }
+            const date = new Date(parseInt(`20${dateTokens[2]}`), dateTokens[0] - 1, dateTokens[1]);
+            if (!newLocation.statistics[date.getTime()]) {
+                newLocation.statistics[date.getTime()] = {
+                    dateInMs: date.getTime(),
+                    deaths: 0,
+                    confirmed: 0,
+                    recovered: 0
                 }
-                newLocation.statistics[date.getTime()][fieldToUpdate] = parseInt(data[i][j]);
             }
+            newLocation.statistics[date.getTime()][fieldToUpdate] = parseInt(data[i][j]);
+        }
 
-            updatedState
+        if (i >= updatedLocations.length) {
+            updatedLocations.push(newLocation);
         }
     }
 
-    console.log(updatedState);
+    console.log(updatedLocations);
 
 
-    return updatedState;
+    return updatedLocations;
 }
 
 export default function reducer(state = defaultState, action: CrnTableAction) {
@@ -62,7 +62,7 @@ export default function reducer(state = defaultState, action: CrnTableAction) {
         case CrnTableActionType.STORE_DEATHS: {
             return { ...state, locations: updateField(state.locations, action.value.value, action.value.headers, "deaths") };
         }
-        case CrnTableActionType.STORE_DEATHS: {
+        case CrnTableActionType.STORE_RECOVERED: {
             return { ...state, locations: updateField(state.locations, action.value.value, action.value.headers, "recovered") };
         }
         default:

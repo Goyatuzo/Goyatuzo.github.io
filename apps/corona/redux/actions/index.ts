@@ -84,7 +84,7 @@ export function fetchDeathsData() {
 }
 
 export function fetchRecoveredData() {
-    return fetchData(requestDeathsData, storeDeathsData, `${rootUrl}time_series_19-covid-Recovered.csv`)
+    return fetchData(requestRecoveredData, storeRecoveredData, `${rootUrl}time_series_19-covid-Recovered.csv`)
 }
 
 export function fetchAllData() {
