@@ -40,8 +40,12 @@ function updateField(locations: CrnLocation[], data: string[][], headers: string
                 }
                 newLocation.statistics[date.getTime()][fieldToUpdate] = parseInt(data[i][j]);
             }
+
+            updatedState
         }
     }
+
+    console.log(updatedState);
 
 
     return updatedState;
@@ -56,10 +60,10 @@ export default function reducer(state = defaultState, action: CrnTableAction) {
             return { ...state, locations: updateField(state.locations, action.value.value, action.value.headers, "confirmed") };
         }
         case CrnTableActionType.STORE_DEATHS: {
-            return { ...state, locations: updateField(state.locations, action.value.value, action.value, "deaths") };
+            return { ...state, locations: updateField(state.locations, action.value.value, action.value.headers, "deaths") };
         }
         case CrnTableActionType.STORE_DEATHS: {
-            return { ...state, locations: updateField(state.locations, action.value.value, action.value, "recovered") };
+            return { ...state, locations: updateField(state.locations, action.value.value, action.value.headers, "recovered") };
         }
         default:
             return state;
