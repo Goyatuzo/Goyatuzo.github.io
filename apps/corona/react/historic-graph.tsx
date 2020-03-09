@@ -35,12 +35,24 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
             },
             data: {
                 datasets: [{
-                    label: 'Number of People',
-                    data: [{ t: new Date(), y: 5 }],
+                    label: 'Confirmed',
+                    data: [],
                     backgroundColor: 'rgba(255, 99, 132, 0.2)',
                     borderColor: 'rgba(255, 99, 132, 1)',
                     borderWidth: 1
-                }]
+                }, {
+                    label: 'Deaths',
+                    data: [],
+                    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                    borderColor: 'rgba(0, 0, 0, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Recovered',
+                    data: [],
+                    backgroundColor: 'rgba(0, 255, 0, 0.2)',
+                    borderColor: 'rgba(0, 255, 0, 1)',
+                    borderWidth: 1
+                }],
             }
         })
     }
