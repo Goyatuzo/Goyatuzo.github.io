@@ -101,8 +101,8 @@ module.exports = [
 
             new HtmlWebpackPlugin({
                 hash: true,
-                template: './pages/corona-graph.html',
-                filename: 'pages/corona-graph.html'
+                template: './pages/corona.html',
+                filename: 'pages/corona.html'
             })
         ]
     },

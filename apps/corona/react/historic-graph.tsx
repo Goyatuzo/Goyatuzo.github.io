@@ -107,6 +107,11 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
                 <h2 className="ui header">Global Numbers</h2>
                 <div className="ui segments">
                     <canvas ref={this.canvasRef} />
+
+                    <div className="ui segment">
+                        Data sourced from: 
+                        <a href="https://github.com/CSSEGISandData/COVID-19">Johns Hopkins CSSE</a>
+                    </div>
                 </div>
             </div>
         );
