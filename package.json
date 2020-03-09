@@ -20,6 +20,7 @@
   "homepage": "https://github.com/Goyatuzo/goyatuzo.github.io#readme",
   "dependencies": {
     "axios": "0.19.2",
+    "chart.js": "2.9.3",
     "csvtojson": "2.0.10",
     "es6-promise": "4.2.8",
     "react": "16.13.0",
@@ -32,6 +33,7 @@
     "webpack-cli": "3.3.11"
   },
   "devDependencies": {
+    "@types/chart.js": "2.9.15",
     "@types/react": "16.9.23",
     "@types/react-dom": "16.9.5",
     "@types/react-redux": "7.1.7",
