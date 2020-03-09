@@ -102,7 +102,14 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
     }
 
     render() {
-        return <canvas ref={this.canvasRef} />
+        return (
+            <div className="ui">
+                <h2 className="ui header">Global Numbers</h2>
+                <div className="ui segments">
+                    <canvas ref={this.canvasRef} />
+                </div>
+            </div>
+        );
     }
 }
 

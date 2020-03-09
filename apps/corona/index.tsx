@@ -9,6 +9,7 @@ import CoronaHistoricGraph from './react/historic-graph';
 
 render(<Provider store={store}>
     <div className="ui container">
+        <h1 className="ui header">Coronavirus</h1>
         <CoronaHistoricGraph />
     </div>
 </Provider>, document.getElementById('corona-table-app'));
