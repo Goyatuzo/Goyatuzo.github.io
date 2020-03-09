@@ -1,8 +1,8 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { CrnTableState } from '../reducers';
 import { CrnTableAction, CrnTableActionType } from './actiontype';
 import { ThunkDispatch } from 'redux-thunk';
-import { CrnLocation } from '../../classes/location';
+import csvToJson = require('csvtojson');
 
 const rootUrl = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/';
 
@@ -13,10 +13,13 @@ function requestConfirmedData(): CrnTableAction {
     }
 }
 
-function storeConfirmedData(value): CrnTableAction {
+function storeConfirmedData(value, headers: string[]): CrnTableAction {
     return {
         type: CrnTableActionType.STORE_CONFIRMED,
-        value
+        value: {
+            value,
+            headers
+        }
     }
 }
 
@@ -25,15 +28,17 @@ export function fetchConfirmedData() {
         dispatch(requestConfirmedData());
 
         return axios.get<string>(`${rootUrl}time_series_19-covid-Confirmed.csv`).then(response => {
-            const datas = response.data.split('\n');
+            // const datas = response.data.split('\n');
 
-            let stored = [];
+            csvToJson({ output: 'csv' }).fromString(response.data).then(data => {
+                let headers = response.data.split('\n')[0].split(',');
 
-            for (let i = 0; i < datas.length; ++i) {
-                stored.push(datas[i].split(/(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|([^\"\\" + strDelimiter + "\\r\\n]*))/gi));
-            }
+                dispatch(storeConfirmedData(data, headers));
+            });
 
-            dispatch(storeConfirmedData(stored));
+
+        }).catch(err => {
+            console.error(err);
         });
     }
 }

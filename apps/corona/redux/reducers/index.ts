@@ -11,7 +11,7 @@ const defaultState: CrnTableState = {
     locations: []
 }
 
-function updateField(locations: CrnLocation[], data: string[][], fieldToUpdate: keyof CrnStats): CrnLocation[] {
+function updateField(locations: CrnLocation[], data: string[][], headers: string[], fieldToUpdate: keyof CrnStats): CrnLocation[] {
     let updatedState: CrnLocation[] = JSON.parse(JSON.stringify(locations));
 
     if (locations.length === 0) {
@@ -27,7 +27,7 @@ function updateField(locations: CrnLocation[], data: string[][], fieldToUpdate: 
             };
 
             for (let j = 4; j < data[i].length; ++j) {
-                const dateTokens = data[0][j].split('/').map(tkn => parseInt(tkn));
+                const dateTokens = headers[j].split('/').map(tkn => parseInt(tkn));
 
                 const date = new Date(parseInt(`20${dateTokens[2]}`), dateTokens[0] - 1, dateTokens[1]);
                 if (!newLocation.statistics[date.getTime()]) {
@@ -40,7 +40,6 @@ function updateField(locations: CrnLocation[], data: string[][], fieldToUpdate: 
                 }
                 newLocation.statistics[date.getTime()][fieldToUpdate] = parseInt(data[i][j]);
             }
-            console.log(newLocation);
         }
     }
 
@@ -54,9 +53,7 @@ export default function reducer(state = defaultState, action: CrnTableAction) {
             return { ...state, requestingConfirmed: true };
         }
         case CrnTableActionType.STORE_CONFIRMED: {
-            console.log(updateField(state.locations, action.value, "confirmed"));
-
-            return { ...state, locations: updateField(state.locations, action.value, "confirmed") };
+            return { ...state, locations: updateField(state.locations, action.value.value, action.value.headers, "confirmed") };
         }
         default:
             return state;
