@@ -45,9 +45,6 @@ function updateField(locations: CrnLocation[], data: string[][], headers: string
         }
     }
 
-    console.log(updatedLocations);
-
-
     return updatedLocations;
 }
 
