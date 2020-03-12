@@ -22,13 +22,16 @@ const LocationDropdownComp: React.StatelessComponent<LocationDropdownProps> = pr
 const LocationDropdown = connect<StateToProps, any, any, CrnTableState>(state => {
     const locations: { [name: string]: boolean } = {};
 
+    // Store all countries and provinces in the dictionary to act as a set.
     state.locations.forEach(location => {
         locations[location.country] = true;
         locations[location.province] = true;
     });
 
+    const sortedLocations = Object.keys(locations).filter(location => location).sort();
+
     return {
-        options: Object.keys(locations).filter(location => location)
+        options: sortedLocations
     }
 })(LocationDropdownComp);
 
