@@ -15,24 +15,37 @@ interface DispatchToProps {
 
 type LocationDropdownProps = StateToProps & DispatchToProps;
 
-const LocationDropdownComp: React.StatelessComponent<LocationDropdownProps> = props => {
+class LocationDropdownComp extends React.Component<LocationDropdownProps, any> {
+    private dropdownRef: React.RefObject<HTMLSelectElement>;
 
-    function onChange(evt: React.ChangeEvent<HTMLSelectElement>) {
-        props.selectLocation(evt.currentTarget.value ?? null)
+    constructor(props: LocationDropdownProps) {
+        super(props);
+
+        this.dropdownRef = React.createRef<HTMLSelectElement>();
     }
 
-    return (
-        <>
-            <select onChange={onChange} className="ui search dropdown">
-                <option value={""}>All</option>
-                {
-                    props.options.map(loc => <option key={loc} value={loc}>{loc}</option>)
-                }
-            </select>
+    onChange = (evt: React.ChangeEvent<HTMLSelectElement>) => {
+        this.props.selectLocation(evt.currentTarget.value ?? null)
+    }
 
-            <Redirect to={`${window.location.pathname}?location=${props.chosenLocation ?? ""}`} />
-        </>
-    )
+    componentDidMount() {
+        ($(this.dropdownRef.current) as any).dropdown();
+    }
+
+    render() {
+        return (
+            <div className="ui fluid">
+                <select ref={this.dropdownRef} className="ui search selection dropdown" onChange={this.onChange}>
+                    <option value="">All</option>
+                    {
+                        this.props.options.map(loc => <option key={loc} value={loc}>{loc}</option>)
+                    }
+                </select>
+
+                <Redirect to={`${window.location.pathname}?location=${this.props.chosenLocation ?? ""}`} />
+            </div>
+        )
+    }
 }
 
 const LocationDropdown = connect<StateToProps, DispatchToProps, any, CrnTableState>(state => {
