@@ -6,7 +6,8 @@ export enum CrnTableActionType {
     REQUEST_DEATHS,
     STORE_DEATHS,
     REQUEST_RECOVERED,
-    STORE_RECOVERED
+    STORE_RECOVERED,
+    SELECT_LOCATION
 }
 
 export interface CrnTableAction<T = any> extends Action<CrnTableActionType> {

@@ -94,3 +94,10 @@ export function fetchAllData() {
         dispatch(fetchRecoveredData());
     }
 }
+
+export function selectLocation(location: string): CrnTableAction {
+    return {
+        type: CrnTableActionType.SELECT_LOCATION,
+        value: location
+    }
+}

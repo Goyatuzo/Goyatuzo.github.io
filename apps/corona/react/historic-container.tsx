@@ -2,10 +2,18 @@ import * as React from 'react';
 import LocationDropdown from './location-dropdown';
 import CoronaHistoricGraph from './historic-graph';
 import { CrnLocation } from '../classes/location';
+import { connect } from 'react-redux';
+import { CrnTableState } from '../redux/reducers';
 
-const HistoricContainer: React.StatelessComponent = props => {
+interface StateToProps {
+    chosenLocation: string;
+}
+
+type HistoricContainerProps = StateToProps;
+
+const HistoricContainerComp: React.StatelessComponent<HistoricContainerProps> = props => {
     const globalNumbers = (data: CrnLocation[]) => {
-        const location = new URLSearchParams(window.location.search).get('location');
+        const location = props.chosenLocation;
 
         let confirmed: { t: Date, y: number }[] = [];
         let deaths: { t: Date, y: number }[] = [];
@@ -70,5 +78,11 @@ const HistoricContainer: React.StatelessComponent = props => {
         </div>
     )
 }
+
+const HistoricContainer = connect<StateToProps, any, any, CrnTableState>(state => {
+    return {
+        chosenLocation: state.chosenLocation
+    }
+})(HistoricContainerComp);
 
 export default HistoricContainer;

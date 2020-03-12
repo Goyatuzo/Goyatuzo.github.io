@@ -5,6 +5,7 @@ export interface CrnTableState {
     requestingConfirmed: boolean;
     requestingDeaths: boolean;
     requestingRecovered: boolean;
+    chosenLocation: string;
     locations: CrnLocation[];
 }
 
@@ -12,6 +13,7 @@ const defaultState: CrnTableState = {
     requestingConfirmed: false,
     requestingDeaths: false,
     requestingRecovered: false,
+    chosenLocation: null,
     locations: []
 }
 
@@ -71,6 +73,9 @@ export default function reducer(state = defaultState, action: CrnTableAction) {
         }
         case CrnTableActionType.STORE_RECOVERED: {
             return { ...state, requestingRecovered: false, locations: updateField(state.locations, action.value.value, action.value.headers, "recovered") };
+        }
+        case CrnTableActionType.SELECT_LOCATION: {
+            return { ...state, chosenLocation: action.value };
         }
         default:
             return state;
