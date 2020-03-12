@@ -5,15 +5,13 @@ import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import store from './redux';
-import CoronaHistoricGraph from './react/historic-graph';
-import LocationDropdown from './react/location-dropdown';
+import HistoricContainer from './react/historic-container';
 
 render(<Router>
     <Provider store={store}>
         <div className="ui container">
             <h1 className="ui header">Coronavirus</h1>
-            <LocationDropdown />
-            <CoronaHistoricGraph />
+            <HistoricContainer />
         </div>
     </Provider>
 </Router>, document.getElementById('corona-table-app'));
