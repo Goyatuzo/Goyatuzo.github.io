@@ -23,7 +23,7 @@ class LocationDropdownComp extends React.Component<LocationDropdownProps, Locati
 
     render() {
         if (this.state?.selected) {
-            return <Redirect to={`?${this.state.selected}`} />
+            return <Redirect to={`/pages/corona.html?${this.state.selected}`} />
         }
 
         return (
