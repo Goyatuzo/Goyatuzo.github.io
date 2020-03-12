@@ -6,11 +6,13 @@ import { BrowserRouter as Router } from 'react-router-dom';
 
 import store from './redux';
 import CoronaHistoricGraph from './react/historic-graph';
+import LocationDropdown from './react/location-dropdown';
 
 render(<Router>
     <Provider store={store}>
         <div className="ui container">
             <h1 className="ui header">Coronavirus</h1>
+            <LocationDropdown />
             <CoronaHistoricGraph />
         </div>
     </Provider>
