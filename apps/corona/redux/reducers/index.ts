@@ -41,7 +41,7 @@ function updateField(locations: CrnLocation[], data: string[][], headers: string
                     recovered: 0
                 }
             }
-            newLocation.statistics[date.getTime()][fieldToUpdate] = parseInt(data[i][j]);
+            newLocation.statistics[date.getTime()][fieldToUpdate] = parseInt(data[i][j] ?? '0');
         }
 
         if (i >= updatedLocations.length) {

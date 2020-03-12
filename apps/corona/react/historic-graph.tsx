@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+
 import { CrnTableState } from '../redux/reducers';
 import { CrnLocation } from '../classes/location';
 import { Chart } from 'chart.js';
@@ -21,34 +22,39 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
     }
 
     private generateDataSet(data: CrnLocation[]): Chart.ChartDataSets[] {
+        const location = new URLSearchParams(window.location.search).get('location');
+
         let confirmed: { t: Date, y: number }[] = [];
         let deaths: { t: Date, y: number }[] = [];
         let recovered: { t: Date, y: number }[] = [];
 
         const datesInMs = Object.keys(data[0]?.statistics ?? {});
         for (let i = 0; i < data.length; ++i) {
-            for (let j = 0; j < datesInMs.length; ++j) {
-                const stats = data[i].statistics[parseInt(datesInMs[j])];
+            // If a location has been supplied in the query string, check if data is from relevant area.
+            if (!location || (location === data[i].province || location === data[i].country)) {
+                for (let j = 0; j < datesInMs.length; ++j) {
+                    const stats = data[i].statistics[parseInt(datesInMs[j])];
 
-                // Add to confirmed
-                if (j >= confirmed.length) {
-                    confirmed.push({ t: new Date(stats.dateInMs), y: stats.confirmed });
-                } else {
-                    confirmed[j].y += stats.confirmed
-                }
+                    // Add to confirmed
+                    if (j >= confirmed.length) {
+                        confirmed.push({ t: new Date(stats.dateInMs), y: stats.confirmed });
+                    } else {
+                        confirmed[j].y += stats.confirmed
+                    }
 
-                // Add to deaths
-                if (j >= deaths.length) {
-                    deaths.push({ t: new Date(stats.dateInMs), y: stats.deaths });
-                } else {
-                    deaths[j].y += stats.deaths;
-                }
+                    // Add to deaths
+                    if (j >= deaths.length) {
+                        deaths.push({ t: new Date(stats.dateInMs), y: stats.deaths });
+                    } else {
+                        deaths[j].y += stats.deaths;
+                    }
 
-                // Add to recovered
-                if (j >= recovered.length) {
-                    recovered.push({ t: new Date(stats.dateInMs), y: stats.recovered });
-                } else {
-                    recovered[j].y += stats.recovered;
+                    // Add to recovered
+                    if (j >= recovered.length) {
+                        recovered.push({ t: new Date(stats.dateInMs), y: stats.recovered });
+                    } else {
+                        recovered[j].y += stats.recovered;
+                    }
                 }
             }
         }
@@ -109,7 +115,7 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
                     <canvas ref={this.canvasRef} />
 
                     <div className="ui segment">
-                        Data sourced from: 
+                        Data sourced from:
                         <a href="https://github.com/CSSEGISandData/COVID-19">Johns Hopkins CSSE</a>
                     </div>
                 </div>

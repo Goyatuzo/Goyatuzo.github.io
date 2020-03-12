@@ -16,6 +16,7 @@ module.exports = [
             filename: '[name].js',
             path: __dirname + '/dist/'
         },
+        devtool: 'source-map',
         resolve: {
             extensions: ['.ts', '.tsx', '.js']
         },
@@ -66,6 +67,7 @@ module.exports = [
             filename: '[name].js',
             path: __dirname + '/dist/'
         },
+        devtool: 'source-map',
         resolve: {
             extensions: ['.ts', '.tsx', '.js']
         },
