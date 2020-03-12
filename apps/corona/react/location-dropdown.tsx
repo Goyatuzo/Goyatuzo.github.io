@@ -24,6 +24,7 @@ const LocationDropdownComp: React.StatelessComponent<LocationDropdownProps> = pr
     return (
         <>
             <select onChange={onChange} className="ui search dropdown">
+                <option value={""}>All</option>
                 {
                     props.options.map(loc => <option key={loc} value={loc}>{loc}</option>)
                 }
