@@ -13,7 +13,7 @@ const LocationDropdownComp: React.StatelessComponent<LocationDropdownProps> = pr
     return (
         <select className="ui search dropdown">
             {
-                props.options.map(loc => <option value={loc}>{loc}</option>)
+                props.options.map(loc => <option key={loc} value={loc}>{loc}</option>)
             }
         </select>
     )
