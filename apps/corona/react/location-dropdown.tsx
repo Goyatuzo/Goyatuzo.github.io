@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { CrnTableState } from '../redux/reducers';
 
@@ -9,14 +9,31 @@ interface StateToProps {
 
 type LocationDropdownProps = StateToProps;
 
-const LocationDropdownComp: React.StatelessComponent<LocationDropdownProps> = props => {
-    return (
-        <select className="ui search dropdown">
-            {
-                props.options.map(loc => <option key={loc} value={loc}>{loc}</option>)
-            }
-        </select>
-    )
+interface LocationDropdownState {
+    selected: string;
+}
+
+class LocationDropdownComp extends React.Component<LocationDropdownProps, LocationDropdownState> {
+
+    onChange = (evt: React.ChangeEvent<HTMLSelectElement>) => {
+        this.setState({
+            selected: evt.currentTarget.value ?? ""
+        })
+    }
+
+    render() {
+        if (this.state?.selected) {
+            return <Redirect to={`?${this.state.selected}`} />
+        }
+
+        return (
+            <select onChange={this.onChange} className="ui search dropdown">
+                {
+                    this.props.options.map(loc => <option key={loc} value={loc}>{loc}</option>)
+                }
+            </select>
+        )
+    }
 }
 
 const LocationDropdown = connect<StateToProps, any, any, CrnTableState>(state => {
