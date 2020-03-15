@@ -3,6 +3,7 @@ import { CrnLocation } from '../classes/location';
 import { connect } from 'react-redux';
 import { CrnTableState } from '../redux/reducers';
 import { CountryTableRow } from '../classes/table';
+import { selectLocation } from '../redux/actions';
 
 interface ExternalProps {
 }
@@ -11,7 +12,11 @@ interface StateToProps {
     data: CrnLocation[];
 }
 
-type CountryTableProps = ExternalProps & StateToProps;
+interface DispatchToProps {
+    selectCountry: (country: string) => void;
+}
+
+type CountryTableProps = ExternalProps & StateToProps & DispatchToProps;
 
 interface CountryTableState {
     tableRows: CountryTableRow[];
@@ -26,8 +31,10 @@ class CountryTableComp extends React.Component<CountryTableProps, CountryTableSt
         };
     }
 
-    private updateTable = (data: CrnLocation[], sortFunc: (a: CountryTableRow, b: CountryTableRow) => boolean) => {
-
+    countrySelected = (country: string) => {
+        return (_: React.MouseEvent<HTMLTableRowElement>) => {
+            return this.props.selectCountry(country ?? null)
+        }
     }
 
     static getDerivedStateFromProps(props: CountryTableProps, state: CountryTableState) {
@@ -76,7 +83,7 @@ class CountryTableComp extends React.Component<CountryTableProps, CountryTableSt
                     {
                         this.state.tableRows.map(row => {
                             return (
-                                <tr key={row.countryName}>
+                                <tr key={row.countryName} onClick={this.countrySelected(row.countryName)}>
                                     <td>{row.countryName}</td>
                                     <td>{row.confirmed}</td>
                                     <td>{row.recovered}</td>
@@ -91,9 +98,13 @@ class CountryTableComp extends React.Component<CountryTableProps, CountryTableSt
     }
 }
 
-const CoronaCountryTable = connect<StateToProps, any, ExternalProps, CrnTableState>(state => {
+const CoronaCountryTable = connect<StateToProps, DispatchToProps, ExternalProps, CrnTableState>(state => {
     return {
         data: state.locations
+    }
+}, (dispatch) => {
+    return {
+        selectCountry: (country: string) => dispatch(selectLocation(country))
     }
 })(CountryTableComp);
 
