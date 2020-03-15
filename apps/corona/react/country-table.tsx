@@ -64,11 +64,16 @@ class CountryTableComp extends React.Component<CountryTableProps, CountryTableSt
         this.sortingHelper(SortColumn.COUNTRY, (a, b) => a.countryName.localeCompare(b.countryName), (a, b) => b.countryName.localeCompare(a.countryName));
     }
 
+    sortConfirmedNumber = (column: SortColumn, numberField: keyof CountryTableRow) => {
+        return () => this.sortingHelper(column, (a, b) => (b[numberField] as number) - (a[numberField] as number), (a, b) => (a[numberField] as number) - (b[numberField] as number));
+    }
+
     countrySelected = (country: string) => {
         return (_: React.MouseEvent<HTMLTableRowElement>) => {
             return this.props.selectCountry(country ?? null)
         }
     }
+
 
     static getDerivedStateFromProps(props: CountryTableProps, state: CountryTableState) {
         let countryData: { [country: string]: CountryTableRow } = {};
@@ -104,9 +109,9 @@ class CountryTableComp extends React.Component<CountryTableProps, CountryTableSt
                 <thead>
                     <tr>
                         <th onClick={this.sortCountryName}>Country Name</th>
-                        <th>Confirmed</th>
-                        <th>Recovered</th>
-                        <th>Deaths</th>
+                        <th onClick={this.sortConfirmedNumber(SortColumn.CONFIRMED, "confirmed")}>Confirmed</th>
+                        <th onClick={this.sortConfirmedNumber(SortColumn.RECOVERED, "recovered")}>Recovered</th>
+                        <th onClick={this.sortConfirmedNumber(SortColumn.DEATH, "deaths")}>Deaths</th>
                     </tr>
                 </thead>
 
