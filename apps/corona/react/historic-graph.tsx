@@ -11,6 +11,7 @@ interface ExternalProps {
 
 interface StateToProps {
     data: CrnLocation[];
+    chosenLocation: string;
 }
 
 type GraphProps = ExternalProps & StateToProps;
@@ -55,7 +56,7 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
     render() {
         return (
             <div className="ui">
-                <h2 className="ui header">Global Numbers</h2>
+                <h2 className="ui header">{this.props.chosenLocation ?? "Global"} Numbers</h2>
                 <div className="ui segments">
                     <canvas ref={this.canvasRef} />
 
@@ -71,7 +72,8 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
 
 const CoronaHistoricGraph = connect<StateToProps, any, ExternalProps, CrnTableState>(state => {
     return {
-        data: state.locations
+        data: state.locations,
+        chosenLocation: state.chosenLocation
     }
 })(CoronaHistoricGraphComponent);
 
