@@ -1,9 +1,11 @@
 import * as React from 'react';
 import LocationDropdown from './location-dropdown';
 import CoronaHistoricGraph from './historic-graph';
-import { CrnLocation } from '../classes/location';
+import { CrnLocation, CrnStats } from '../classes/location';
 import { connect } from 'react-redux';
 import { CrnTableState } from '../redux/reducers';
+import CoronaTable from './country-table';
+import { CountryTableRow } from '../classes/table';
 
 interface StateToProps {
     chosenLocation: string;
@@ -71,10 +73,11 @@ const HistoricContainerComp: React.StatelessComponent<HistoricContainerProps> = 
         }];
     }
 
+
     return (
-        <div>
-            <LocationDropdown />
+        <div className="ui grid">
             <CoronaHistoricGraph generateDataSet={globalNumbers} />
+            <CoronaTable />
         </div>
     )
 }

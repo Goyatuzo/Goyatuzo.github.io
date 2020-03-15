@@ -35,7 +35,7 @@ function updateField(locations: CrnLocation[], data: string[][], headers: string
             const dateTokens = headers[j].split('/').map(tkn => parseInt(tkn));
 
             const date = new Date(parseInt(`20${dateTokens[2]}`), dateTokens[0] - 1, dateTokens[1]);
-            if (!newLocation.statistics[date.getTime()]) {
+            if (!newLocation.statistics[date.getTime()] && data[i][j] !== "") {
                 newLocation.statistics[date.getTime()] = {
                     dateInMs: date.getTime(),
                     deaths: 0,
@@ -43,7 +43,10 @@ function updateField(locations: CrnLocation[], data: string[][], headers: string
                     recovered: 0
                 }
             }
-            newLocation.statistics[date.getTime()][fieldToUpdate] = parseInt(data[i][j] ?? '0');
+            
+            if (newLocation.statistics[date.getTime()] && data[i][j] !== "") {
+                newLocation.statistics[date.getTime()][fieldToUpdate] = parseInt(data[i][j] ?? '0') || 0;
+            }
         }
 
         if (i >= updatedLocations.length) {

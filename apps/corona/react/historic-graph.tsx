@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { CrnTableState } from '../redux/reducers';
 import { CrnLocation } from '../classes/location';
 import { Chart } from 'chart.js';
+import { selectLocation } from '../redux/actions';
 
 interface ExternalProps {
     generateDataSet: (data: CrnLocation[]) => Chart.ChartDataSets[];
@@ -11,9 +12,14 @@ interface ExternalProps {
 
 interface StateToProps {
     data: CrnLocation[];
+    chosenLocation: string;
 }
 
-type GraphProps = ExternalProps & StateToProps;
+interface DispatchToProps {
+    removeCountry: () => void;
+}
+
+type GraphProps = ExternalProps & StateToProps & DispatchToProps;
 
 export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps> {
     private chart: Chart;
@@ -54,8 +60,11 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
 
     render() {
         return (
-            <div className="ui">
-                <h2 className="ui header">Global Numbers</h2>
+            <div className="ten wide column">
+                <h2 className="ui header">{this.props.chosenLocation ?? "Global"} Numbers</h2>
+                {
+                    this.props.chosenLocation ? <button type="button" onClick={() => this.props.removeCountry()}>Show All Data</button> : null
+                }
                 <div className="ui segments">
                     <canvas ref={this.canvasRef} />
 
@@ -69,9 +78,14 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
     }
 }
 
-const CoronaHistoricGraph = connect<StateToProps, any, ExternalProps, CrnTableState>(state => {
+const CoronaHistoricGraph = connect<StateToProps, DispatchToProps, ExternalProps, CrnTableState>(state => {
     return {
-        data: state.locations
+        data: state.locations,
+        chosenLocation: state.chosenLocation
+    }
+}, (dispatch) => {
+    return {
+        removeCountry: () => dispatch(selectLocation(null))
     }
 })(CoronaHistoricGraphComponent);
 
