@@ -21,6 +21,15 @@ type CountryTableProps = ExternalProps & StateToProps & DispatchToProps;
 interface CountryTableState {
     tableRows: CountryTableRow[];
     sortTable: (a: CountryTableRow, b: CountryTableRow) => number;
+    sortingColumn: SortColumn;
+    sortReversed: boolean;
+}
+
+enum SortColumn {
+    COUNTRY,
+    CONFIRMED,
+    RECOVERED,
+    DEATH
 }
 
 class CountryTableComp extends React.Component<CountryTableProps, CountryTableState> {
@@ -29,8 +38,27 @@ class CountryTableComp extends React.Component<CountryTableProps, CountryTableSt
 
         this.state = {
             tableRows: [],
-            sortTable: () => 0
+            sortTable: () => 0,
+            sortingColumn: -1,
+            sortReversed: false
         };
+    }
+
+
+    sortCountryName = () => {
+        // If it's currently not sorted by column, it's basically resetting reversed
+        if (this.state.sortingColumn !== SortColumn.COUNTRY || (this.state.sortingColumn === SortColumn.COUNTRY && this.state.sortReversed)) {
+            this.setState({
+                sortReversed: false,
+                sortTable: (a, b) => a.countryName.localeCompare(b.countryName),
+                sortingColumn: SortColumn.COUNTRY
+            });
+        } else {
+            this.setState({
+                sortReversed: true,
+                sortTable: (a, b) => b.countryName.localeCompare(a.countryName)
+            });
+        }
     }
 
     countrySelected = (country: string) => {
@@ -72,7 +100,7 @@ class CountryTableComp extends React.Component<CountryTableProps, CountryTableSt
             <table className="ui selectable compact celled table">
                 <thead>
                     <tr>
-                        <th>Country Name</th>
+                        <th onClick={this.sortCountryName}>Country Name</th>
                         <th>Confirmed</th>
                         <th>Recovered</th>
                         <th>Deaths</th>
