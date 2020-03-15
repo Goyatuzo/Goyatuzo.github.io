@@ -10,6 +10,7 @@ interface ExternalProps {
 
 interface StateToProps {
     data: CrnLocation[];
+    chosenLocation: string;
 }
 
 interface DispatchToProps {
@@ -151,7 +152,7 @@ class CountryTableComp extends React.Component<CountryTableProps, CountryTableSt
                     {
                         this.state.tableRows.map(row => {
                             return (
-                                <tr key={row.countryName} onClick={this.countrySelected(row.countryName)}>
+                                <tr key={row.countryName} onClick={this.countrySelected(row.countryName)} className={row.countryName === this.props.chosenLocation ? "blue" : ""}>
                                     <td>{row.countryName}</td>
                                     <td>{row.confirmed}</td>
                                     <td>{row.recovered}</td>
@@ -168,7 +169,8 @@ class CountryTableComp extends React.Component<CountryTableProps, CountryTableSt
 
 const CoronaCountryTable = connect<StateToProps, DispatchToProps, ExternalProps, CrnTableState>(state => {
     return {
-        data: state.locations
+        data: state.locations,
+        chosenLocation: state.chosenLocation
     }
 }, (dispatch) => {
     return {
