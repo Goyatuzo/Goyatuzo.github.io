@@ -75,7 +75,7 @@ const HistoricContainerComp: React.StatelessComponent<HistoricContainerProps> = 
 
 
     return (
-        <div>
+        <div className="ui grid">
             <CoronaHistoricGraph generateDataSet={globalNumbers} />
             <CoronaTable />
         </div>

@@ -118,51 +118,53 @@ class CountryTableComp extends React.Component<CountryTableProps, CountryTableSt
 
     render() {
         return (
-            <table className="ui selectable compact celled table">
-                <thead>
-                    <tr>
-                        <th onClick={this.sortCountryName}>
-                            Country Name
+            <div className="six wide column">
+                <table className="ui selectable compact celled table">
+                    <thead>
+                        <tr>
+                            <th onClick={this.sortCountryName}>
+                                Country Name
                             {
-                                this.renderCaret(SortColumn.COUNTRY)
-                            }
-                        </th>
-                        <th onClick={this.sortConfirmedNumber(SortColumn.CONFIRMED, "confirmed")}>
-                            Confirmed
+                                    this.renderCaret(SortColumn.COUNTRY)
+                                }
+                            </th>
+                            <th onClick={this.sortConfirmedNumber(SortColumn.CONFIRMED, "confirmed")}>
+                                Confirmed
                             {
-                                this.renderCaret(SortColumn.CONFIRMED)
-                            }
-                        </th>
-                        <th onClick={this.sortConfirmedNumber(SortColumn.RECOVERED, "recovered")}>
-                            Recovered
+                                    this.renderCaret(SortColumn.CONFIRMED)
+                                }
+                            </th>
+                            <th onClick={this.sortConfirmedNumber(SortColumn.RECOVERED, "recovered")}>
+                                Recovered
                             {
-                                this.renderCaret(SortColumn.RECOVERED)
-                            }
-                        </th>
-                        <th onClick={this.sortConfirmedNumber(SortColumn.DEATH, "deaths")}>
-                            Deaths
+                                    this.renderCaret(SortColumn.RECOVERED)
+                                }
+                            </th>
+                            <th onClick={this.sortConfirmedNumber(SortColumn.DEATH, "deaths")}>
+                                Deaths
                             {
-                                this.renderCaret(SortColumn.DEATH)
-                            }
-                        </th>
-                    </tr>
-                </thead>
+                                    this.renderCaret(SortColumn.DEATH)
+                                }
+                            </th>
+                        </tr>
+                    </thead>
 
-                <tbody>
-                    {
-                        this.state.tableRows.map(row => {
-                            return (
-                                <tr key={row.countryName} onClick={this.countrySelected(row.countryName)} className={row.countryName === this.props.chosenLocation ? "blue" : ""}>
-                                    <td>{row.countryName}</td>
-                                    <td>{row.confirmed}</td>
-                                    <td>{row.recovered}</td>
-                                    <td>{row.deaths}</td>
-                                </tr>
-                            )
-                        })
-                    }
-                </tbody>
-            </table>
+                    <tbody>
+                        {
+                            this.state.tableRows.map(row => {
+                                return (
+                                    <tr key={row.countryName} onClick={this.countrySelected(row.countryName)} className={row.countryName === this.props.chosenLocation ? "blue" : ""}>
+                                        <td>{row.countryName}</td>
+                                        <td>{row.confirmed}</td>
+                                        <td>{row.recovered}</td>
+                                        <td>{row.deaths}</td>
+                                    </tr>
+                                )
+                            })
+                        }
+                    </tbody>
+                </table>
+            </div>
         )
     }
 }

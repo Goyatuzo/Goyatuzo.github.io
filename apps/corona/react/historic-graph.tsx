@@ -60,7 +60,7 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
 
     render() {
         return (
-            <div className="ui">
+            <div className="ten wide column">
                 <h2 className="ui header">{this.props.chosenLocation ?? "Global"} Numbers</h2>
                 {
                     this.props.chosenLocation ? <button type="button" onClick={() => this.props.removeCountry()}>Show All Data</button> : null
