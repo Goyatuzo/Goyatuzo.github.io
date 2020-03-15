@@ -20,6 +20,7 @@ type CountryTableProps = ExternalProps & StateToProps & DispatchToProps;
 
 interface CountryTableState {
     tableRows: CountryTableRow[];
+    sortTable: (a: CountryTableRow, b: CountryTableRow) => number;
 }
 
 class CountryTableComp extends React.Component<CountryTableProps, CountryTableState> {
@@ -27,7 +28,8 @@ class CountryTableComp extends React.Component<CountryTableProps, CountryTableSt
         super(props);
 
         this.state = {
-            tableRows: []
+            tableRows: [],
+            sortTable: () => 0
         };
     }
 
@@ -58,9 +60,7 @@ class CountryTableComp extends React.Component<CountryTableProps, CountryTableSt
 
         let tableRows: CountryTableRow[] = Object.keys(countryData).map(key => countryData[key]);
 
-        // if (sortFunc) {
-        //     tableRows = tableRows.sort((a, b) => a.countryName.localeCompare(b.countryName));
-        // }
+        tableRows = tableRows.sort(state.sortTable);
 
         return {
             tableRows
@@ -69,7 +69,7 @@ class CountryTableComp extends React.Component<CountryTableProps, CountryTableSt
 
     render() {
         return (
-            <table className="ui selectable celled table">
+            <table className="ui selectable compact celled table">
                 <thead>
                     <tr>
                         <th>Country Name</th>
