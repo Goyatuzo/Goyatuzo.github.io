@@ -103,15 +103,47 @@ class CountryTableComp extends React.Component<CountryTableProps, CountryTableSt
         }
     }
 
+    renderCaret(column: SortColumn) {
+        let className = 'caret down icon';
+
+        if (this.state.sortReversed) {
+            className += ' vertically flipped';
+        }
+
+        if (column === this.state.sortingColumn) {
+            return <i className={className}></i>;
+        }
+    }
+
     render() {
         return (
             <table className="ui selectable compact celled table">
                 <thead>
                     <tr>
-                        <th onClick={this.sortCountryName}>Country Name</th>
-                        <th onClick={this.sortConfirmedNumber(SortColumn.CONFIRMED, "confirmed")}>Confirmed</th>
-                        <th onClick={this.sortConfirmedNumber(SortColumn.RECOVERED, "recovered")}>Recovered</th>
-                        <th onClick={this.sortConfirmedNumber(SortColumn.DEATH, "deaths")}>Deaths</th>
+                        <th onClick={this.sortCountryName}>
+                            Country Name
+                            {
+                                this.renderCaret(SortColumn.COUNTRY)
+                            }
+                        </th>
+                        <th onClick={this.sortConfirmedNumber(SortColumn.CONFIRMED, "confirmed")}>
+                            Confirmed
+                            {
+                                this.renderCaret(SortColumn.CONFIRMED)
+                            }
+                        </th>
+                        <th onClick={this.sortConfirmedNumber(SortColumn.RECOVERED, "recovered")}>
+                            Recovered
+                            {
+                                this.renderCaret(SortColumn.RECOVERED)
+                            }
+                        </th>
+                        <th onClick={this.sortConfirmedNumber(SortColumn.DEATH, "deaths")}>
+                            Deaths
+                            {
+                                this.renderCaret(SortColumn.DEATH)
+                            }
+                        </th>
                     </tr>
                 </thead>
 
