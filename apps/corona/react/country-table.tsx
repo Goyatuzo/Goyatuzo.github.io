@@ -2,9 +2,10 @@ import * as React from 'react';
 import { CrnLocation } from '../classes/location';
 import { connect } from 'react-redux';
 import { CrnTableState } from '../redux/reducers';
+import { CountryTableRow } from '../classes/table';
 
 interface ExternalProps {
-    generateDataSet: (data: CrnLocation[]) => string[][];
+    generateDataSet: (data: CrnLocation[]) => CountryTableRow[];
     headers: string[];
 }
 
@@ -12,16 +13,16 @@ interface StateToProps {
     data: CrnLocation[];
 }
 
-type TableProps = ExternalProps & StateToProps;
+type CountryTableProps = ExternalProps & StateToProps;
 
-class TableComp extends React.Component<TableProps, {}> {
+class CountryTableComp extends React.Component<CountryTableProps, {}> {
     render() {
         return (
             <table className="ui celled table">
                 <thead>
                     <tr>
                         {
-                            this.props.headers.map(header => <th>{header}</th>)
+                            this.props.headers.map(header => <th key={header}>{header}</th>)
                         }
                     </tr>
                 </thead>
@@ -30,10 +31,11 @@ class TableComp extends React.Component<TableProps, {}> {
                     {
                         this.props.generateDataSet(this.props.data).map(row => {
                             return (
-                                <tr>
-                                    {
-                                        row.map(dat => <td>{dat}</td>)
-                                    }
+                                <tr key={row.countryName}>
+                                    <td>{row.countryName}</td>
+                                    <td>{row.confirmed}</td>
+                                    <td>{row.recovered}</td>
+                                    <td>{row.deaths}</td>
                                 </tr>
                             )
                         })
@@ -44,10 +46,10 @@ class TableComp extends React.Component<TableProps, {}> {
     }
 }
 
-const CoronaTable = connect<StateToProps, any, ExternalProps, CrnTableState>(state => {
+const CoronaCountryTable = connect<StateToProps, any, ExternalProps, CrnTableState>(state => {
     return {
         data: state.locations
     }
-})(TableComp);
+})(CountryTableComp);
 
-export default CoronaTable;
+export default CoronaCountryTable;

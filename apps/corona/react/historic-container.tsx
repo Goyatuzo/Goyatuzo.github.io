@@ -1,9 +1,11 @@
 import * as React from 'react';
 import LocationDropdown from './location-dropdown';
 import CoronaHistoricGraph from './historic-graph';
-import { CrnLocation } from '../classes/location';
+import { CrnLocation, CrnStats } from '../classes/location';
 import { connect } from 'react-redux';
 import { CrnTableState } from '../redux/reducers';
+import CoronaTable from './country-table';
+import { CountryTableRow } from '../classes/table';
 
 interface StateToProps {
     chosenLocation: string;
@@ -71,10 +73,37 @@ const HistoricContainerComp: React.StatelessComponent<HistoricContainerProps> = 
         }];
     }
 
+    const tableData = (data: CrnLocation[]): CountryTableRow[] => {
+        let countryData: { [country: string]: CountryTableRow } = {};
+
+        data.forEach(location => {
+            const maxTime = Math.max(...Object.keys(location.statistics).map(ms => parseInt(ms)));
+            if (location.country in countryData) {
+                countryData[location.country].confirmed += location.statistics[maxTime].confirmed;
+                countryData[location.country].recovered += location.statistics[maxTime].recovered;
+                countryData[location.country].deaths += location.statistics[maxTime].deaths;
+            } else {
+                countryData[location.country] = {
+                    countryName: location.country,
+                    confirmed: location.statistics[maxTime].confirmed,
+                    recovered: location.statistics[maxTime].recovered,
+                    deaths: location.statistics[maxTime].deaths
+                };
+            }
+        });
+
+        let tableRows: CountryTableRow[] = Object.keys(countryData).map(key => countryData[key]);
+        tableRows = tableRows.sort((a, b) => a.countryName.localeCompare(b.countryName));
+
+        return tableRows;
+    }
+
+
     return (
         <div>
             <LocationDropdown />
             <CoronaHistoricGraph generateDataSet={globalNumbers} />
+            <CoronaTable headers={['Country', 'Confirmed', 'Recovered', 'Deaths']} generateDataSet={tableData} />
         </div>
     )
 }
