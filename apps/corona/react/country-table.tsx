@@ -44,21 +44,24 @@ class CountryTableComp extends React.Component<CountryTableProps, CountryTableSt
         };
     }
 
-
-    sortCountryName = () => {
+    sortingHelper(column: SortColumn, sorting: (a: CountryTableRow, b: CountryTableRow) => number, reverse: (a: CountryTableRow, b: CountryTableRow) => number) {
         // If it's currently not sorted by column, it's basically resetting reversed
-        if (this.state.sortingColumn !== SortColumn.COUNTRY || (this.state.sortingColumn === SortColumn.COUNTRY && this.state.sortReversed)) {
+        if (this.state.sortingColumn !== column || (this.state.sortingColumn === column && this.state.sortReversed)) {
             this.setState({
                 sortReversed: false,
-                sortTable: (a, b) => a.countryName.localeCompare(b.countryName),
-                sortingColumn: SortColumn.COUNTRY
+                sortTable: sorting,
+                sortingColumn: column
             });
         } else {
             this.setState({
                 sortReversed: true,
-                sortTable: (a, b) => b.countryName.localeCompare(a.countryName)
+                sortTable: reverse
             });
         }
+    }
+
+    sortCountryName = () => {
+        this.sortingHelper(SortColumn.COUNTRY, (a, b) => a.countryName.localeCompare(b.countryName), (a, b) => b.countryName.localeCompare(a.countryName));
     }
 
     countrySelected = (country: string) => {
