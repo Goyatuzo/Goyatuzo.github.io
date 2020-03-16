@@ -28,18 +28,19 @@ function updateField(locations: CrnLocation[], data: DSVRowArray, fieldToUpdate:
         const row = data[i];
 
         let newLocation: CrnLocation = updatedLocations[i] ?? {
-            province: row[0],
-            country: row[1],
-            lat: parseInt(row[2]),
-            long: parseInt(row[3]),
+            province: row[headers[0]],
+            country: row[headers[1]],
+            lat: parseInt(row[headers[2]]),
+            long: parseInt(row[headers[3]]),
             statistics: {}
         };
 
         for (let j = 4; j < headers.length; ++j) {
             const dateTokens = headers[j].split('/').map(tkn => parseInt(tkn));
 
+
             const date = new Date(parseInt(`20${dateTokens[2]}`), dateTokens[0] - 1, dateTokens[1]);
-            if (!newLocation.statistics[date.getTime()] && data[i][j] !== "") {
+            if (!newLocation.statistics[date.getTime()] && data[i][headers[j]] !== "") {
                 newLocation.statistics[date.getTime()] = {
                     dateInMs: date.getTime(),
                     deaths: 0,
@@ -48,10 +49,12 @@ function updateField(locations: CrnLocation[], data: DSVRowArray, fieldToUpdate:
                 }
             }
 
-            if (newLocation.statistics[date.getTime()] && data[i][j] !== "") {
-                newLocation.statistics[date.getTime()][fieldToUpdate] = parseInt(data[i][j] ?? '0') || 0;
+            if (newLocation.statistics[date.getTime()] && data[i][headers[j]] !== "") {
+                newLocation.statistics[date.getTime()][fieldToUpdate] = parseInt(data[i][headers[j]] ?? '0') || 0;
             }
         }
+
+        console.log(newLocation);
 
         if (i >= updatedLocations.length) {
             updatedLocations.push(newLocation);
