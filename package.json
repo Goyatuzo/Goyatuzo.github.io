@@ -19,7 +19,6 @@
   },
   "homepage": "https://github.com/Goyatuzo/goyatuzo.github.io#readme",
   "dependencies": {
-    "chart.js": "2.9.3",
     "d3": "5.15.0",
     "es6-promise": "4.2.8",
     "react": "16.13.0",
@@ -33,7 +32,6 @@
     "webpack-cli": "3.3.11"
   },
   "devDependencies": {
-    "@types/chart.js": "2.9.15",
     "@types/d3": "5.7.2",
     "@types/jquery": "3.3.33",
     "@types/react": "16.9.23",
