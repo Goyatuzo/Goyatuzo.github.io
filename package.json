@@ -19,7 +19,6 @@
   },
   "homepage": "https://github.com/Goyatuzo/goyatuzo.github.io#readme",
   "dependencies": {
-    "axios": "0.19.2",
     "chart.js": "2.9.3",
     "d3": "5.15.0",
     "es6-promise": "4.2.8",

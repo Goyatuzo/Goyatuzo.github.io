@@ -1,4 +1,3 @@
-import axios, { AxiosError } from 'axios';
 import { CrnTableState } from '../reducers';
 import { CrnTableAction, CrnTableActionType } from './actiontype';
 import { ThunkDispatch } from 'redux-thunk';
