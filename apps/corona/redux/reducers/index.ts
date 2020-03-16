@@ -22,8 +22,6 @@ function updateField(locations: CrnLocation[], data: DSVRowArray, fieldToUpdate:
     let updatedLocations: CrnLocation[] = JSON.parse(JSON.stringify(locations));
     const headers = data.columns;
 
-    console.log(headers);
-
     for (let i = 0; i < data.length; ++i) {
         const row = data[i];
 
@@ -37,7 +35,6 @@ function updateField(locations: CrnLocation[], data: DSVRowArray, fieldToUpdate:
 
         for (let j = 4; j < headers.length; ++j) {
             const dateTokens = headers[j].split('/').map(tkn => parseInt(tkn));
-
 
             const date = new Date(parseInt(`20${dateTokens[2]}`), dateTokens[0] - 1, dateTokens[1]);
             if (!newLocation.statistics[date.getTime()] && data[i][headers[j]] !== "") {
@@ -53,8 +50,6 @@ function updateField(locations: CrnLocation[], data: DSVRowArray, fieldToUpdate:
                 newLocation.statistics[date.getTime()][fieldToUpdate] = parseInt(data[i][headers[j]] ?? '0') || 0;
             }
         }
-
-        console.log(newLocation);
 
         if (i >= updatedLocations.length) {
             updatedLocations.push(newLocation);
