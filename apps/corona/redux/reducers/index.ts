@@ -8,6 +8,7 @@ export interface CrnTableState {
     requestingRecovered: boolean;
     chosenLocation: string;
     locations: CrnLocation[];
+    unparsedData: DSVRowArray;
 }
 
 const defaultState: CrnTableState = {
@@ -15,7 +16,8 @@ const defaultState: CrnTableState = {
     requestingDeaths: false,
     requestingRecovered: false,
     chosenLocation: null,
-    locations: []
+    locations: [],
+    unparsedData: null
 }
 
 function updateField(locations: CrnLocation[], data: DSVRowArray, fieldToUpdate: keyof CrnStats): CrnLocation[] {

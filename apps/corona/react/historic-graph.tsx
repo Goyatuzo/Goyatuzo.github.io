@@ -1,13 +1,15 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { select } from 'd3-selection';
+import { scaleUtc, extent, scaleLinear, sum, stack, scaleOrdinal, schemeCategory10, area, axisBottom } from 'd3';
 
 import { CrnTableState } from '../redux/reducers';
 import { CrnLocation } from '../classes/location';
-import { Chart } from 'chart.js';
 import { selectLocation } from '../redux/actions';
+import { OverallGraphEntry } from '../classes/graph';
 
 interface ExternalProps {
-    generateDataSet: (data: CrnLocation[]) => Chart.ChartDataSets[];
+    generateDataSet: (data: CrnLocation[]) => OverallGraphEntry[];
 }
 
 interface StateToProps {
@@ -22,40 +24,61 @@ interface DispatchToProps {
 type GraphProps = ExternalProps & StateToProps & DispatchToProps;
 
 export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps> {
-    private chart: Chart;
-    private canvasRef: React.RefObject<HTMLCanvasElement>;
+    private svgRef: React.RefObject<SVGSVGElement>;
+
+    private height = 600;
+    private width = 600;
 
     constructor(props: GraphProps) {
         super(props);
 
-        this.canvasRef = React.createRef<HTMLCanvasElement>();
+        this.svgRef = React.createRef<SVGSVGElement>();
     }
 
     componentDidMount() {
-        this.chart = new Chart(this.canvasRef.current, {
-            type: 'line',
-            options: {
-                scales: {
-                    xAxes: [{
-                        type: 'time',
-                        time: {
-                            unit: 'day'
-                        }
-                    }]
-                }
-            },
-            data: {
-                datasets: this.props.generateDataSet(this.props.data)
-            }
-        })
+        this.createChart();
     }
 
     componentDidUpdate() {
-        this.chart.data = {
-            datasets: this.props.generateDataSet(this.props.data)
-        };
+        this.createChart();
+    }
 
-        this.chart.update();
+    private createChart = () => {
+        const margin = ({ top: 20, right: 30, bottom: 30, left: 40 })
+
+        const series = this.props.generateDataSet(this.props.data);
+
+        const stacked = stack().keys(['confirmed', 'deaths', 'recovered'])((series as any));
+        const x = scaleUtc().domain(extent(series, d => d.date)).range([margin.left, this.width - margin.right]);
+        const y = scaleLinear().domain([0, sum(series, d => d.confirmed)]).nice().range([this.height - margin.bottom, margin.top]);
+        const colors = scaleOrdinal<string>().domain(['confirmed', 'deaths', 'recovered']).range(schemeCategory10);
+        const areas = area<any>().x(d => x(d.data.date)).y0(d => y(d[0])).y1(d => y(d[1]));
+
+        const svg = select(this.svgRef.current);
+        svg.append('g')
+            .selectAll('path')
+            .data(stacked)
+            .join('path')
+            .attr('fill', ({ key }) => colors(key))
+            .attr('d', areas);
+
+        // x-axis
+        svg.append('g')
+            .call(g => g
+                .attr('transform', `translate(0, ${this.height - margin.bottom})`)
+                .call(axisBottom(x).ticks(this.width / 80).tickSizeOuter(0)));
+
+        // y-axis
+        svg.append('g')
+            .call(g => g
+                .attr('transform', `translate(${margin.left}, 0)`)
+                .call(g => g.select('.domain').remove())
+                .call(g => g.select('.tick:last-of-type text').clone()
+                    .attr('x', 3)
+                    .attr('text-anchor', 'start')
+                    .attr('font-weight', 'bold')
+                    .text('test')));
+
     }
 
     render() {
@@ -66,7 +89,7 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
                     this.props.chosenLocation ? <button type="button" onClick={() => this.props.removeCountry()}>Show All Data</button> : null
                 }
                 <div className="ui segments">
-                    <canvas ref={this.canvasRef} />
+                    <svg ref={this.svgRef} width={this.width} height={this.height} />
 
                     <div className="ui segment">
                         Data sourced from:
