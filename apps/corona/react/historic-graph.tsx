@@ -44,7 +44,7 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
     }
 
     private createChart = () => {
-        const margin = ({ top: 20, right: 30, bottom: 30, left: 40 })
+        const margin = ({ top: 20, right: 30, bottom: 30, left: 50 })
 
         const series = this.props.generateDataSet(this.props.data);
 
