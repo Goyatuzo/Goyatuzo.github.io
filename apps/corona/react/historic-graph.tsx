@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { select } from 'd3-selection';
-import { scaleUtc, extent, scaleLinear, sum, stack, scaleOrdinal, schemeCategory10, area, axisBottom } from 'd3';
+import { scaleUtc, extent, scaleLinear, max, stack, scaleOrdinal, schemeCategory10, area, axisBottom, axisLeft } from 'd3';
 
 import { CrnTableState } from '../redux/reducers';
 import { CrnLocation } from '../classes/location';
@@ -26,7 +26,7 @@ type GraphProps = ExternalProps & StateToProps & DispatchToProps;
 export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps> {
     private svgRef: React.RefObject<SVGSVGElement>;
 
-    private height = 600;
+    private height = 500;
     private width = 600;
 
     constructor(props: GraphProps) {
@@ -36,7 +36,7 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
     }
 
     componentDidMount() {
-        this.createChart();
+        // this.createChart();
     }
 
     componentDidUpdate() {
@@ -50,7 +50,7 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
 
         const stacked = stack().keys(['confirmed', 'deaths', 'recovered'])((series as any));
         const x = scaleUtc().domain(extent(series, d => d.date)).range([margin.left, this.width - margin.right]);
-        const y = scaleLinear().domain([0, sum(series, d => d.confirmed)]).nice().range([this.height - margin.bottom, margin.top]);
+        const y = scaleLinear().domain([0, max(series, d => d.confirmed)]).nice().range([this.height - margin.bottom, margin.top]);
         const colors = scaleOrdinal<string>().domain(['confirmed', 'deaths', 'recovered']).range(schemeCategory10);
         const areas = area<any>().x(d => x(d.data.date)).y0(d => y(d[0])).y1(d => y(d[1]));
 
@@ -72,12 +72,13 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
         svg.append('g')
             .call(g => g
                 .attr('transform', `translate(${margin.left}, 0)`)
+                .call(axisLeft(y))
                 .call(g => g.select('.domain').remove())
                 .call(g => g.select('.tick:last-of-type text').clone()
                     .attr('x', 3)
                     .attr('text-anchor', 'start')
                     .attr('font-weight', 'bold')
-                    .text('test')));
+                    .text("Number of People")));
 
     }
 

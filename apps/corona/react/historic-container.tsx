@@ -18,7 +18,7 @@ const HistoricContainerComp: React.StatelessComponent<HistoricContainerProps> = 
     const globalNumbers = (data: CrnLocation[]): OverallGraphEntry[] => {
         const location = props.chosenLocation;
 
-        let entries: OverallGraphEntry[] = [];
+        let uniqueEntries: { [dateInMs: number]: OverallGraphEntry } = {}
 
         const datesInMs = Object.keys(data[0]?.statistics ?? {});
         for (let i = 0; i < data.length; ++i) {
@@ -27,15 +27,23 @@ const HistoricContainerComp: React.StatelessComponent<HistoricContainerProps> = 
                 for (let j = 0; j < datesInMs.length; ++j) {
                     const stats = data[i].statistics[parseInt(datesInMs[j])];
 
-                    entries.push({
-                        date: new Date(stats.dateInMs),
-                        confirmed: stats.confirmed,
-                        deaths: stats.deaths,
-                        recovered: stats.recovered
-                    });
+                    if (stats.dateInMs in uniqueEntries) {
+                        uniqueEntries[stats.dateInMs].confirmed += stats.confirmed;
+                        uniqueEntries[stats.dateInMs].deaths += stats.deaths;
+                        uniqueEntries[stats.dateInMs].recovered += stats.recovered;
+                    } else {
+                        uniqueEntries[stats.dateInMs] = {
+                            date: new Date(stats.dateInMs),
+                            confirmed: stats.confirmed,
+                            deaths: stats.deaths,
+                            recovered: stats.recovered
+                        }
+                    }
                 }
             }
         }
+
+        const entries = Object.keys(uniqueEntries).map(key => uniqueEntries[key]);
 
         return entries;
     }
