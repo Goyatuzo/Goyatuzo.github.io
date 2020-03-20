@@ -27,7 +27,7 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
     private svgRef: React.RefObject<SVGSVGElement>;
 
     private height = 500;
-    private width = 600;
+    private width = 700;
 
     constructor(props: GraphProps) {
         super(props);
@@ -97,7 +97,7 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
                     this.props.chosenLocation ? <button type="button" onClick={() => this.props.removeCountry()}>Show All Data</button> : null
                 }
                 <div className="ui segments">
-                    <svg ref={this.svgRef} width={this.width} height={this.height} />
+                    <svg ref={this.svgRef} width={this.width} height={this.height} viewBox={`0 0 ${this.width} ${this.height}`} preserveAspectRatio="xMidYMid meet" />
 
                     <div className="ui segment">
                         Data sourced from:
