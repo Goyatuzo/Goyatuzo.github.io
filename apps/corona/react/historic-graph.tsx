@@ -53,7 +53,7 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
         const series = this.props.generateDataSet(this.props.data);
 
         
-        const stacked = stack().keys(['confirmed', 'deaths', 'recovered'])((series as any));
+        const stacked = stack().keys(['deaths', 'recovered', 'confirmed'])((series as any));
         const x = scaleUtc().domain(extent(series, d => d.date)).range([margin.left, this.width - margin.right]);
         const y = scaleLinear().domain([0, max(series, d => d.confirmed + d.deaths + d.recovered)]).nice().range([this.height - margin.bottom, margin.top]);
         const colors = scaleOrdinal<string>().domain(['confirmed', 'deaths', 'recovered']).range(schemeCategory10);
@@ -78,6 +78,9 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
                 .attr('transform', `translate(${margin.left}, 0)`)
                 .call(axisLeft(y))
                 .call(g => g.select('.domain').remove())
+                .call(g => g.selectAll(".tick line").clone()
+                    .attr("stroke-opacity", d => d === 1 ? null : 0.2)
+                    .attr("x2", this.width - margin.left - margin.right))
                 .call(g => g.select('.tick:last-of-type text').clone()
                     .attr('x', 3)
                     .attr('text-anchor', 'start')
