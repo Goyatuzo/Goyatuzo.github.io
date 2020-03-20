@@ -44,17 +44,21 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
     }
 
     private createChart = () => {
+        // Clear existing graph
+        const svg = select(this.svgRef.current);
+        svg.selectAll('*').remove();
+
         const margin = ({ top: 20, right: 30, bottom: 30, left: 50 })
 
         const series = this.props.generateDataSet(this.props.data);
 
+        
         const stacked = stack().keys(['confirmed', 'deaths', 'recovered'])((series as any));
         const x = scaleUtc().domain(extent(series, d => d.date)).range([margin.left, this.width - margin.right]);
-        const y = scaleLinear().domain([0, max(series, d => d.confirmed)]).nice().range([this.height - margin.bottom, margin.top]);
+        const y = scaleLinear().domain([0, max(series, d => d.confirmed + d.deaths + d.recovered)]).nice().range([this.height - margin.bottom, margin.top]);
         const colors = scaleOrdinal<string>().domain(['confirmed', 'deaths', 'recovered']).range(schemeCategory10);
         const areas = area<any>().x(d => x(d.data.date)).y0(d => y(d[0])).y1(d => y(d[1]));
 
-        const svg = select(this.svgRef.current);
         svg.append('g')
             .selectAll('path')
             .data(stacked)

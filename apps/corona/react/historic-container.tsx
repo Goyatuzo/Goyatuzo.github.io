@@ -1,8 +1,10 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import {}  from 'd3'
+
 import LocationDropdown from './location-dropdown';
 import CoronaHistoricGraph from './historic-graph';
 import { CrnLocation, CrnStats } from '../classes/location';
-import { connect } from 'react-redux';
 import { CrnTableState } from '../redux/reducers';
 import CoronaTable from './country-table';
 import { CountryTableRow } from '../classes/table';
@@ -28,13 +30,13 @@ const HistoricContainerComp: React.StatelessComponent<HistoricContainerProps> = 
                     const stats = data[i].statistics[parseInt(datesInMs[j])];
 
                     if (stats.dateInMs in uniqueEntries) {
-                        uniqueEntries[stats.dateInMs].confirmed += stats.confirmed;
+                        uniqueEntries[stats.dateInMs].confirmed += (stats.confirmed - stats.deaths - stats.recovered);
                         uniqueEntries[stats.dateInMs].deaths += stats.deaths;
                         uniqueEntries[stats.dateInMs].recovered += stats.recovered;
                     } else {
                         uniqueEntries[stats.dateInMs] = {
                             date: new Date(stats.dateInMs),
-                            confirmed: stats.confirmed,
+                            confirmed: (stats.confirmed - stats.deaths - stats.recovered),
                             deaths: stats.deaths,
                             recovered: stats.recovered
                         }
