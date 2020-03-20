@@ -23,16 +23,23 @@ interface DispatchToProps {
 
 type GraphProps = ExternalProps & StateToProps & DispatchToProps;
 
-export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps> {
-    private svgRef: React.RefObject<SVGSVGElement>;
+interface GraphState {
+    width: number;
+    height: number;
+}
 
-    private height = 500;
-    private width = 700;
+export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps, GraphState> {
+    private svgRef: React.RefObject<SVGSVGElement>;
 
     constructor(props: GraphProps) {
         super(props);
 
         this.svgRef = React.createRef<SVGSVGElement>();
+
+        this.state = {
+            width: 700,
+            height: 500
+        };
     }
 
     componentDidMount() {
@@ -54,8 +61,8 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
 
         
         const stacked = stack().keys(['deaths', 'recovered', 'confirmed'])((series as any));
-        const x = scaleUtc().domain(extent(series, d => d.date)).range([margin.left, this.width - margin.right]);
-        const y = scaleLinear().domain([0, max(series, d => d.confirmed + d.deaths + d.recovered)]).nice().range([this.height - margin.bottom, margin.top]);
+        const x = scaleUtc().domain(extent(series, d => d.date)).range([margin.left, this.state.width - margin.right]);
+        const y = scaleLinear().domain([0, max(series, d => d.confirmed + d.deaths + d.recovered)]).nice().range([this.state.height - margin.bottom, margin.top]);
         const colors = scaleOrdinal<string>().domain(['confirmed', 'deaths', 'recovered']).range(schemeCategory10);
         const areas = area<any>().x(d => x(d.data.date)).y0(d => y(d[0])).y1(d => y(d[1]));
 
@@ -69,8 +76,8 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
         // x-axis
         svg.append('g')
             .call(g => g
-                .attr('transform', `translate(0, ${this.height - margin.bottom})`)
-                .call(axisBottom(x).ticks(this.width / 80).tickSizeOuter(0)));
+                .attr('transform', `translate(0, ${this.state.height - margin.bottom})`)
+                .call(axisBottom(x).ticks(this.state.width / 80).tickSizeOuter(0)));
 
         // y-axis
         svg.append('g')
@@ -80,7 +87,7 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
                 .call(g => g.select('.domain').remove())
                 .call(g => g.selectAll(".tick line").clone()
                     .attr("stroke-opacity", d => d === 1 ? null : 0.2)
-                    .attr("x2", this.width - margin.left - margin.right))
+                    .attr("x2", this.state.width - margin.left - margin.right))
                 .call(g => g.select('.tick:last-of-type text').clone()
                     .attr('x', 3)
                     .attr('text-anchor', 'start')
@@ -97,7 +104,7 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
                     this.props.chosenLocation ? <button type="button" onClick={() => this.props.removeCountry()}>Show All Data</button> : null
                 }
                 <div className="ui segments">
-                    <svg ref={this.svgRef} width={this.width} height={this.height} viewBox={`0 0 ${this.width} ${this.height}`} preserveAspectRatio="xMidYMid meet" />
+                    <svg ref={this.svgRef} width={this.state.width} height={this.state.height} viewBox={`0 0 ${this.state.width} ${this.state.height}`} preserveAspectRatio="xMidYMid meet" />
 
                     <div className="ui segment">
                         Data sourced from:
