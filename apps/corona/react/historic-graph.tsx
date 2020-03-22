@@ -38,7 +38,7 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
         this.svgRef = React.createRef<SVGSVGElement>();
 
         this.state = {
-            width: 1150,
+            width: 1100,
             height: 500,
             keys: ['deaths', 'recovered', 'confirmed']
         };
@@ -98,8 +98,7 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
 
     render() {
         return (
-            <div className="">
-                <h2 className="ui header">{this.props.chosenLocation ?? "Global"} Numbers</h2>
+            <div className="ui container">
                 <p>Hover over the shaded area to see what data is represented.</p>
                 {
                     this.props.chosenLocation ? <button type="button" onClick={() => this.props.removeCountry()}>Show All Data</button> : null

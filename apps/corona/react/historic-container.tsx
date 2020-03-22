@@ -80,7 +80,9 @@ const HistoricContainerComp: React.StatelessComponent<HistoricContainerProps> = 
 
     return (
         <div className="ui grid">
+            <h2 className="ui center aligned header">Global Numbers</h2>
             <CoronaHistoricGraph generateDataSet={globalNumbers} />
+            <h2 className="ui center aligned header">Normalized Confirmed Cases by Country</h2>
             <ConfirmedNormalizedAreaChart generateDataSet={normalizedCountryNumbers} />
         </div>
     )

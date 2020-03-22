@@ -36,7 +36,7 @@ class ConfirmedNormalizedAreaChartComp extends React.PureComponent<GraphProps, G
         this.svgRef = React.createRef<SVGSVGElement>();
 
         this.state = {
-            width: 1150,
+            width: 1100,
             height: 500,
             keys: ['deaths', 'recovered', 'confirmed']
         };
@@ -94,8 +94,7 @@ class ConfirmedNormalizedAreaChartComp extends React.PureComponent<GraphProps, G
 
     render() {
         return (
-            <div className="">
-                <h2 className="ui header">Normalized Confirmed Cases by Country</h2>
+            <div className="ui container">
                 <p>Hover over the shaded area to see the name of the country.</p>
                 {
                     this.props.chosenLocation ? <button type="button" onClick={() => this.props.removeCountry()}>Show All Data</button> : null
