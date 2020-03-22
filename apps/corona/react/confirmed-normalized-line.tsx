@@ -47,27 +47,27 @@ class ConfirmedNormalizedAreaChartComp extends React.PureComponent<GraphProps, G
     }
 
     private createChart = () => {
-        const keys = [...new Set(this.props.data.map(location => location.country))];
-
+        
         // Clear existing graph
         const svg = select(this.svgRef.current);
         svg.selectAll('*').remove();
-
+        
         const margin = ({ top: 20, right: 30, bottom: 30, left: 50 })
-
+        
         const series = this.props.generateDataSet(this.props.data);
 
+        const keys = Object.keys(series[series.length - 1]).filter(key => key !== "date").sort((a, b) => {
+            const last = series[series.length - 1];
+
+            return last[a] - last[b];
+        });
+
+        console.log(keys);
+        
         const stacked = stack().keys(keys).offset(stackOffsetExpand)((series as any));
         const x = scaleUtc().domain(extent(series, d => d.date)).range([margin.left, this.state.width - margin.right]);
         const y = scaleLinear().range([this.state.height - margin.bottom, margin.top]);
-        const areas = area<any>().x(d => x(d.data.date)).y0(d => y(d[0])).y1(d => y(d[1]));
-        // const colors = scaleOrdinal<string>()
-        //     .domain(keys)
-        //     .range(range(keys.length).map(scaleLinear<string>()
-        //         .domain([0, keys.length - 1])
-        //         .range(['red', 'blue', 'green'])
-        //         .interpolate(interpolateHcl)));
-        
+        const areas = area<any>().x(d => x(d.data.date)).y0(d => y(d[0])).y1(d => y(d[1]));        
         const colors = scaleOrdinal<string>().domain(keys).range(schemeCategory10);
 
         svg.append('g')
@@ -97,7 +97,8 @@ class ConfirmedNormalizedAreaChartComp extends React.PureComponent<GraphProps, G
     render() {
         return (
             <div className="">
-                <h2 className="ui header">Normalized Confirmed Cases</h2>
+                <h2 className="ui header">Normalized Confirmed Cases by Country</h2>
+                <p>Hover over the shaded area to see the name of the country.</p>
                 {
                     this.props.chosenLocation ? <button type="button" onClick={() => this.props.removeCountry()}>Show All Data</button> : null
                 }
