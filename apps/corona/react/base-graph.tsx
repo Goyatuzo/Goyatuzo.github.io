@@ -9,7 +9,7 @@ import { selectLocation } from '../redux/actions';
 import { OverallGraphEntry } from '../classes/graph';
 
 interface ExternalProps {
-    generateDataSet: (data: CrnLocation[]) => OverallGraphEntry[];
+    createChart: (refNode: React.RefObject<SVGSVGElement>) => void;
 }
 
 interface StateToProps {
@@ -29,7 +29,7 @@ interface GraphState {
     keys: string[];
 }
 
-export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps, GraphState> {
+export class BaseGraphComponent extends React.PureComponent<GraphProps, GraphState> {
     private svgRef: React.RefObject<SVGSVGElement>;
 
     constructor(props: GraphProps) {
@@ -45,55 +45,7 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
     }
 
     componentDidUpdate() {
-        this.createChart();
-    }
-
-    private createChart = () => {
-        // Clear existing graph
-        const svg = select(this.svgRef.current);
-        svg.selectAll('*').remove();
-
-        const margin = ({ top: 20, right: 30, bottom: 30, left: 50 })
-
-        const series = this.props.generateDataSet(this.props.data);
-
-        
-        const stacked = stack().keys(this.state.keys)((series as any));
-        const x = scaleUtc().domain(extent(series, d => d.date)).range([margin.left, this.state.width - margin.right]);
-        const y = scaleLinear().domain([0, max(series, d => d.confirmed + d.deaths + d.recovered)]).nice().range([this.state.height - margin.bottom, margin.top]);
-        const colors = scaleOrdinal<string>().domain(this.state.keys).range(schemeCategory10);
-        const areas = area<any>().x(d => x(d.data.date)).y0(d => y(d[0])).y1(d => y(d[1]));
-
-        svg.append('g')
-            .selectAll('path')
-            .data(stacked)
-            .join('path')
-            .attr('fill', ({ key }) => colors(key))
-            .attr('d', areas)
-            .append('title')
-            .text(({key}) => key);
-
-        // x-axis
-        svg.append('g')
-            .call(g => g
-                .attr('transform', `translate(0, ${this.state.height - margin.bottom})`)
-                .call(axisBottom(x).ticks(this.state.width / 80).tickSizeOuter(0)));
-
-        // y-axis
-        svg.append('g')
-            .call(g => g
-                .attr('transform', `translate(${margin.left}, 0)`)
-                .call(axisLeft(y))
-                .call(g => g.select('.domain').remove())
-                .call(g => g.selectAll(".tick line").clone()
-                    .attr("stroke-opacity", d => d === 1 ? null : 0.2)
-                    .attr("x2", this.state.width - margin.left - margin.right))
-                .call(g => g.select('.tick:last-of-type text').clone()
-                    .attr('x', 3)
-                    .attr('text-anchor', 'start')
-                    .attr('font-weight', 'bold')
-                    .text("Number of People")));
-
+        this.props.createChart(this.svgRef);
     }
 
     render() {
@@ -116,7 +68,7 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
     }
 }
 
-const CoronaHistoricGraph = connect<StateToProps, DispatchToProps, ExternalProps, CrnTableState>(state => {
+const BaseD3Graph = connect<StateToProps, DispatchToProps, ExternalProps, CrnTableState>(state => {
     return {
         data: state.locations,
         chosenLocation: state.chosenLocation
@@ -125,6 +77,6 @@ const CoronaHistoricGraph = connect<StateToProps, DispatchToProps, ExternalProps
     return {
         removeCountry: () => dispatch(selectLocation(null))
     }
-})(CoronaHistoricGraphComponent);
+})(BaseGraphComponent);
 
-export default CoronaHistoricGraph;
+export default BaseD3Graph;
