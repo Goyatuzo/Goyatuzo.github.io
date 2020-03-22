@@ -9,7 +9,7 @@ import { selectLocation } from '../redux/actions';
 import { OverallGraphEntry } from '../classes/graph';
 
 interface ExternalProps {
-    createChart: (refNode: React.RefObject<SVGSVGElement>) => void;
+    createChart: (refNode: React.RefObject<SVGSVGElement>, data: CrnLocation[], state: BaseGraphState) => void;
 }
 
 interface StateToProps {
@@ -23,13 +23,18 @@ interface DispatchToProps {
 
 type GraphProps = ExternalProps & StateToProps & DispatchToProps;
 
-interface GraphState {
+export interface BaseGraphState {
     width: number;
     height: number;
-    keys: string[];
+    margins: {
+        top: number;
+        bottom: number;
+        left: number;
+        right: number;
+    }
 }
 
-export class BaseGraphComponent extends React.PureComponent<GraphProps, GraphState> {
+export class BaseGraphComponent extends React.PureComponent<GraphProps, BaseGraphState> {
     private svgRef: React.RefObject<SVGSVGElement>;
 
     constructor(props: GraphProps) {
@@ -40,12 +45,12 @@ export class BaseGraphComponent extends React.PureComponent<GraphProps, GraphSta
         this.state = {
             width: 1100,
             height: 500,
-            keys: ['deaths', 'recovered', 'confirmed']
+            margins: { top: 20, right: 30, bottom: 30, left: 50 }
         };
     }
 
     componentDidUpdate() {
-        this.props.createChart(this.svgRef);
+        this.props.createChart(this.svgRef, this.props.data, this.state);
     }
 
     render() {

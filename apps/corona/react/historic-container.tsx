@@ -2,14 +2,11 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { } from 'd3'
 
-import LocationDropdown from './location-dropdown';
-import { CrnLocation, CrnStats } from '../classes/location';
+import { CrnLocation } from '../classes/location';
 import { CrnTableState } from '../redux/reducers';
-import CoronaTable from './country-table';
-import { CountryTableRow } from '../classes/table';
 import { OverallGraphEntry, NormalizedGraphEntry } from '../classes/graph';
-import ConfirmedNormalizedAreaChart from './confirmed-normalized-line';
 import GlobalOverallGraph from './global-overall-graph';
+import ConfirmedNormalizedArea from './confirmed-normalized-line';
 
 interface StateToProps {
     chosenLocation: string;
@@ -83,7 +80,7 @@ const HistoricContainerComp: React.StatelessComponent<HistoricContainerProps> = 
             <h2 className="ui center aligned header">Global Numbers</h2>
             <GlobalOverallGraph generateDataSet={globalNumbers} />
             <h2 className="ui center aligned header">Normalized Confirmed Cases by Country</h2>
-            <ConfirmedNormalizedAreaChart generateDataSet={normalizedCountryNumbers} />
+            <ConfirmedNormalizedArea generateDataSet={normalizedCountryNumbers} />
         </div>
     )
 }
