@@ -62,8 +62,6 @@ class ConfirmedNormalizedAreaChartComp extends React.PureComponent<GraphProps, G
             return last[a] - last[b];
         });
 
-        console.log(keys);
-        
         const stacked = stack().keys(keys).offset(stackOffsetExpand)((series as any));
         const x = scaleUtc().domain(extent(series, d => d.date)).range([margin.left, this.state.width - margin.right]);
         const y = scaleLinear().range([this.state.height - margin.bottom, margin.top]);

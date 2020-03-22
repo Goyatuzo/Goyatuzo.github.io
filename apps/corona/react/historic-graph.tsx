@@ -69,7 +69,9 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
             .data(stacked)
             .join('path')
             .attr('fill', ({ key }) => colors(key))
-            .attr('d', areas);
+            .attr('d', areas)
+            .append('title')
+            .text(({key}) => key);
 
         // x-axis
         svg.append('g')
@@ -98,6 +100,7 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
         return (
             <div className="">
                 <h2 className="ui header">{this.props.chosenLocation ?? "Global"} Numbers</h2>
+                <p>Hover over the shaded area to see what data is represented.</p>
                 {
                     this.props.chosenLocation ? <button type="button" onClick={() => this.props.removeCountry()}>Show All Data</button> : null
                 }
