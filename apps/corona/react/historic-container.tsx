@@ -1,11 +1,15 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { } from 'd3'
+
 import LocationDropdown from './location-dropdown';
 import CoronaHistoricGraph from './historic-graph';
 import { CrnLocation, CrnStats } from '../classes/location';
-import { connect } from 'react-redux';
 import { CrnTableState } from '../redux/reducers';
 import CoronaTable from './country-table';
 import { CountryTableRow } from '../classes/table';
+import { OverallGraphEntry, NormalizedGraphEntry } from '../classes/graph';
+import ConfirmedNormalizedAreaChart from './confirmed-normalized-line';
 
 interface StateToProps {
     chosenLocation: string;
@@ -14,12 +18,10 @@ interface StateToProps {
 type HistoricContainerProps = StateToProps;
 
 const HistoricContainerComp: React.StatelessComponent<HistoricContainerProps> = props => {
-    const globalNumbers = (data: CrnLocation[]) => {
+    const globalNumbers = (data: CrnLocation[]): OverallGraphEntry[] => {
         const location = props.chosenLocation;
 
-        let confirmed: { t: Date, y: number }[] = [];
-        let deaths: { t: Date, y: number }[] = [];
-        let recovered: { t: Date, y: number }[] = [];
+        let uniqueEntries: { [dateInMs: number]: OverallGraphEntry } = {}
 
         const datesInMs = Object.keys(data[0]?.statistics ?? {});
         for (let i = 0; i < data.length; ++i) {
@@ -28,56 +30,60 @@ const HistoricContainerComp: React.StatelessComponent<HistoricContainerProps> = 
                 for (let j = 0; j < datesInMs.length; ++j) {
                     const stats = data[i].statistics[parseInt(datesInMs[j])];
 
-                    // Add to confirmed
-                    if (j >= confirmed.length) {
-                        confirmed.push({ t: new Date(stats.dateInMs), y: stats.confirmed });
+                    if (stats.dateInMs in uniqueEntries) {
+                        uniqueEntries[stats.dateInMs].confirmed += (stats.confirmed - stats.deaths - stats.recovered);
+                        uniqueEntries[stats.dateInMs].deaths += stats.deaths;
+                        uniqueEntries[stats.dateInMs].recovered += stats.recovered;
                     } else {
-                        confirmed[j].y += stats.confirmed
-                    }
-
-                    // Add to deaths
-                    if (j >= deaths.length) {
-                        deaths.push({ t: new Date(stats.dateInMs), y: stats.deaths });
-                    } else {
-                        deaths[j].y += stats.deaths;
-                    }
-
-                    // Add to recovered
-                    if (j >= recovered.length) {
-                        recovered.push({ t: new Date(stats.dateInMs), y: stats.recovered });
-                    } else {
-                        recovered[j].y += stats.recovered;
+                        uniqueEntries[stats.dateInMs] = {
+                            date: new Date(stats.dateInMs),
+                            confirmed: (stats.confirmed - stats.deaths - stats.recovered),
+                            deaths: stats.deaths,
+                            recovered: stats.recovered
+                        }
                     }
                 }
             }
         }
 
-        return [{
-            label: 'Confirmed',
-            data: confirmed,
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1
-        }, {
-            label: 'Deaths',
-            data: deaths,
-            backgroundColor: 'rgba(0, 0, 0, 0.2)',
-            borderColor: 'rgba(0, 0, 0, 1)',
-            borderWidth: 1
-        }, {
-            label: 'Recovered',
-            data: recovered,
-            backgroundColor: 'rgba(0, 255, 0, 0.2)',
-            borderColor: 'rgba(0, 255, 0, 1)',
-            borderWidth: 1
-        }];
+        const entries = Object.keys(uniqueEntries).map(key => uniqueEntries[key]);
+
+        return entries;
+    }
+
+    const normalizedCountryNumbers = (data: CrnLocation[]): NormalizedGraphEntry[] => {
+        let uniqueEntries: { [dateInMs: number]: NormalizedGraphEntry } = {}
+
+        const datesInMs = Object.keys(data[0]?.statistics ?? {});
+        for (let i = 0; i < data.length; ++i) {
+            for (let j = 0; j < datesInMs.length; ++j) {
+                const stats = data[i].statistics[parseInt(datesInMs[j])];
+
+                if (stats.dateInMs in uniqueEntries && data[i].country in uniqueEntries[stats.dateInMs]) {
+                    uniqueEntries[stats.dateInMs][data[i].country] += stats.confirmed;
+                } else if (stats.dateInMs in uniqueEntries && !(data[i].country in uniqueEntries[stats.dateInMs])) {
+                    uniqueEntries[stats.dateInMs][data[i].country] = stats.confirmed;
+                } else {
+                    uniqueEntries[stats.dateInMs] = {
+                        date: new Date(stats.dateInMs),
+                        [data[i].country]: stats.confirmed
+                    }
+                }
+            }
+        }
+
+        const entries = Object.keys(uniqueEntries).map(key => uniqueEntries[key]);
+
+        return entries;
     }
 
 
     return (
         <div className="ui grid">
+            <h2 className="ui center aligned header">Global Numbers</h2>
             <CoronaHistoricGraph generateDataSet={globalNumbers} />
-            <CoronaTable />
+            <h2 className="ui center aligned header">Normalized Confirmed Cases by Country</h2>
+            <ConfirmedNormalizedAreaChart generateDataSet={normalizedCountryNumbers} />
         </div>
     )
 }

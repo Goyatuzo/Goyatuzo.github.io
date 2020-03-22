@@ -1,8 +1,7 @@
-import axios, { AxiosError } from 'axios';
 import { CrnTableState } from '../reducers';
 import { CrnTableAction, CrnTableActionType } from './actiontype';
 import { ThunkDispatch } from 'redux-thunk';
-import csvToJson = require('csvtojson');
+import { csv } from 'd3';
 
 const rootUrl = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/';
 
@@ -13,13 +12,10 @@ function requestConfirmedData(): CrnTableAction {
     }
 }
 
-function storeConfirmedData(value, headers: string[]): CrnTableAction {
+function storeConfirmedData(value): CrnTableAction {
     return {
         type: CrnTableActionType.STORE_CONFIRMED,
-        value: {
-            value,
-            headers
-        }
+        value: value
     }
 }
 
@@ -30,13 +26,10 @@ function requestRecoveredData(): CrnTableAction {
     }
 }
 
-function storeRecoveredData(value, headers: string[]): CrnTableAction {
+function storeRecoveredData(value): CrnTableAction {
     return {
         type: CrnTableActionType.STORE_RECOVERED,
-        value: {
-            value,
-            headers
-        }
+        value: value
     }
 }
 
@@ -47,28 +40,19 @@ function requestDeathsData(): CrnTableAction {
     }
 }
 
-function storeDeathsData(value, headers: string[]): CrnTableAction {
+function storeDeathsData(value): CrnTableAction {
     return {
         type: CrnTableActionType.STORE_DEATHS,
-        value: {
-            value,
-            headers
-        }
+        value: value
     }
 }
 
-function fetchData(preFetchDispatch: () => CrnTableAction, storeDispatch: (value, headers: string[]) => CrnTableAction, url: string) {
+function fetchData(preFetchDispatch: () => CrnTableAction, storeDispatch: (value) => CrnTableAction, url: string) {
     return (dispatch: ThunkDispatch<any, any, CrnTableAction>, getState: () => CrnTableState) => {
         dispatch(preFetchDispatch());
 
-        return axios.get<string>(url).then(response => {
-            // const datas = response.data.split('\n');
-
-            csvToJson({ output: 'csv' }).fromString(response.data).then(data => {
-                let headers = response.data.split('\n')[0].split(',');
-
-                dispatch(storeDispatch(data, headers));
-            });
+        return csv(url).then(response => {
+            dispatch(storeDispatch(response))
         }).catch(err => {
             console.error(err);
         });

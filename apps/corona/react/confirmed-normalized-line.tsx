@@ -1,15 +1,13 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { select } from 'd3-selection';
-import { scaleUtc, extent, scaleLinear, max, stack, scaleOrdinal, schemeCategory10, area, axisBottom, axisLeft } from 'd3';
-
-import { CrnTableState } from '../redux/reducers';
 import { CrnLocation } from '../classes/location';
+import { NormalizedGraphEntry } from '../classes/graph';
+import { connect } from 'react-redux';
+import { select, stack, scaleUtc, extent, scaleLinear, max, scaleOrdinal, area, axisBottom, axisLeft, stackOffsetExpand, interpolateHcl, range, schemeCategory10 } from 'd3';
+import { CrnTableState } from '../redux/reducers';
 import { selectLocation } from '../redux/actions';
-import { OverallGraphEntry } from '../classes/graph';
 
 interface ExternalProps {
-    generateDataSet: (data: CrnLocation[]) => OverallGraphEntry[];
+    generateDataSet: (data: CrnLocation[]) => NormalizedGraphEntry[];
 }
 
 interface StateToProps {
@@ -29,7 +27,7 @@ interface GraphState {
     keys: string[];
 }
 
-export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps, GraphState> {
+class ConfirmedNormalizedAreaChartComp extends React.PureComponent<GraphProps, GraphState> {
     private svgRef: React.RefObject<SVGSVGElement>;
 
     constructor(props: GraphProps) {
@@ -49,29 +47,35 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
     }
 
     private createChart = () => {
+        
         // Clear existing graph
         const svg = select(this.svgRef.current);
         svg.selectAll('*').remove();
-
+        
         const margin = ({ top: 20, right: 30, bottom: 30, left: 50 })
-
+        
         const series = this.props.generateDataSet(this.props.data);
 
-        
-        const stacked = stack().keys(this.state.keys)((series as any));
+        const keys = Object.keys(series[series.length - 1]).filter(key => key !== "date").sort((a, b) => {
+            const last = series[series.length - 1];
+
+            return last[a] - last[b];
+        });
+
+        const stacked = stack().keys(keys).offset(stackOffsetExpand)((series as any));
         const x = scaleUtc().domain(extent(series, d => d.date)).range([margin.left, this.state.width - margin.right]);
-        const y = scaleLinear().domain([0, max(series, d => d.confirmed + d.deaths + d.recovered)]).nice().range([this.state.height - margin.bottom, margin.top]);
-        const colors = scaleOrdinal<string>().domain(this.state.keys).range(schemeCategory10);
-        const areas = area<any>().x(d => x(d.data.date)).y0(d => y(d[0])).y1(d => y(d[1]));
+        const y = scaleLinear().range([this.state.height - margin.bottom, margin.top]);
+        const areas = area<any>().x(d => x(d.data.date)).y0(d => y(d[0])).y1(d => y(d[1]));        
+        const colors = scaleOrdinal<string>().domain(keys).range(schemeCategory10);
 
         svg.append('g')
             .selectAll('path')
             .data(stacked)
             .join('path')
-            .attr('fill', ({ key }) => colors(key))
-            .attr('d', areas)
+                .attr('fill', ({ key }) => colors(key))
+                .attr('d', areas)
             .append('title')
-            .text(({key}) => key);
+                .text(({key}) => key);
 
         // x-axis
         svg.append('g')
@@ -82,24 +86,16 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
         // y-axis
         svg.append('g')
             .call(g => g
-                .attr('transform', `translate(${margin.left}, 0)`)
-                .call(axisLeft(y))
-                .call(g => g.select('.domain').remove())
-                .call(g => g.selectAll(".tick line").clone()
-                    .attr("stroke-opacity", d => d === 1 ? null : 0.2)
-                    .attr("x2", this.state.width - margin.left - margin.right))
-                .call(g => g.select('.tick:last-of-type text').clone()
-                    .attr('x', 3)
-                    .attr('text-anchor', 'start')
-                    .attr('font-weight', 'bold')
-                    .text("Number of People")));
+                .attr("transform", `translate(${margin.left},0)`)
+                .call(axisLeft(y).ticks(10, "%"))
+                .call(g => g.select(".domain").remove()));
 
     }
 
     render() {
         return (
             <div className="ui container">
-                <p>Hover over the shaded area to see what data is represented.</p>
+                <p>Hover over the shaded area to see the name of the country.</p>
                 {
                     this.props.chosenLocation ? <button type="button" onClick={() => this.props.removeCountry()}>Show All Data</button> : null
                 }
@@ -116,7 +112,7 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
     }
 }
 
-const CoronaHistoricGraph = connect<StateToProps, DispatchToProps, ExternalProps, CrnTableState>(state => {
+const ConfirmedNormalizedAreaChart = connect<StateToProps, DispatchToProps, ExternalProps, CrnTableState>(state => {
     return {
         data: state.locations,
         chosenLocation: state.chosenLocation
@@ -125,6 +121,6 @@ const CoronaHistoricGraph = connect<StateToProps, DispatchToProps, ExternalProps
     return {
         removeCountry: () => dispatch(selectLocation(null))
     }
-})(CoronaHistoricGraphComponent);
+})(ConfirmedNormalizedAreaChartComp);
 
-export default CoronaHistoricGraph;
+export default ConfirmedNormalizedAreaChart;
