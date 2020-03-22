@@ -4,3 +4,7 @@ export interface OverallGraphEntry {
     deaths: number;
     recovered: number;
 }
+
+export interface NormalizedGraphEntry {
+    date: Date;
+}

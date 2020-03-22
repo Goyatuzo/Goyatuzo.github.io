@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import {}  from 'd3'
+import { } from 'd3'
 
 import LocationDropdown from './location-dropdown';
 import CoronaHistoricGraph from './historic-graph';
@@ -8,7 +8,8 @@ import { CrnLocation, CrnStats } from '../classes/location';
 import { CrnTableState } from '../redux/reducers';
 import CoronaTable from './country-table';
 import { CountryTableRow } from '../classes/table';
-import { OverallGraphEntry } from '../classes/graph';
+import { OverallGraphEntry, NormalizedGraphEntry } from '../classes/graph';
+import ConfirmedNormalizedAreaChart from './confirmed-normalized-line';
 
 interface StateToProps {
     chosenLocation: string;
@@ -50,10 +51,37 @@ const HistoricContainerComp: React.StatelessComponent<HistoricContainerProps> = 
         return entries;
     }
 
+    const normalizedCountryNumbers = (data: CrnLocation[]): NormalizedGraphEntry[] => {
+        let uniqueEntries: { [dateInMs: number]: NormalizedGraphEntry } = {}
+
+        const datesInMs = Object.keys(data[0]?.statistics ?? {});
+        for (let i = 0; i < data.length; ++i) {
+            for (let j = 0; j < datesInMs.length; ++j) {
+                const stats = data[i].statistics[parseInt(datesInMs[j])];
+
+                if (stats.dateInMs in uniqueEntries && data[i].country in uniqueEntries[stats.dateInMs]) {
+                    uniqueEntries[stats.dateInMs][data[i].country] += stats.confirmed;
+                } else if (stats.dateInMs in uniqueEntries && !(data[i].country in uniqueEntries[stats.dateInMs])) {
+                    uniqueEntries[stats.dateInMs][data[i].country] = stats.confirmed;
+                } else {
+                    uniqueEntries[stats.dateInMs] = {
+                        date: new Date(stats.dateInMs),
+                        [data[i].country]: stats.confirmed
+                    }
+                }
+            }
+        }
+
+        const entries = Object.keys(uniqueEntries).map(key => uniqueEntries[key]);
+
+        return entries;
+    }
+
 
     return (
         <div className="ui grid">
             <CoronaHistoricGraph generateDataSet={globalNumbers} />
+            <ConfirmedNormalizedAreaChart generateDataSet={normalizedCountryNumbers} />
         </div>
     )
 }
