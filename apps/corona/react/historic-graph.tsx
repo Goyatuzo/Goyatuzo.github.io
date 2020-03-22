@@ -26,6 +26,7 @@ type GraphProps = ExternalProps & StateToProps & DispatchToProps;
 interface GraphState {
     width: number;
     height: number;
+    keys: string[];
 }
 
 export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps, GraphState> {
@@ -38,12 +39,9 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
 
         this.state = {
             width: 1150,
-            height: 500
+            height: 500,
+            keys: ['deaths', 'recovered', 'confirmed']
         };
-    }
-
-    componentDidMount() {
-        // this.createChart();
     }
 
     componentDidUpdate() {
@@ -60,10 +58,10 @@ export class CoronaHistoricGraphComponent extends React.PureComponent<GraphProps
         const series = this.props.generateDataSet(this.props.data);
 
         
-        const stacked = stack().keys(['deaths', 'recovered', 'confirmed'])((series as any));
+        const stacked = stack().keys(this.state.keys)((series as any));
         const x = scaleUtc().domain(extent(series, d => d.date)).range([margin.left, this.state.width - margin.right]);
         const y = scaleLinear().domain([0, max(series, d => d.confirmed + d.deaths + d.recovered)]).nice().range([this.state.height - margin.bottom, margin.top]);
-        const colors = scaleOrdinal<string>().domain(['confirmed', 'deaths', 'recovered']).range(schemeCategory10);
+        const colors = scaleOrdinal<string>().domain(this.state.keys).range(schemeCategory10);
         const areas = area<any>().x(d => x(d.data.date)).y0(d => y(d[0])).y1(d => y(d[1]));
 
         svg.append('g')
