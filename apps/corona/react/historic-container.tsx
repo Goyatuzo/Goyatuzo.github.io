@@ -27,11 +27,11 @@ const HistoricContainerComp: React.StatelessComponent<HistoricContainerProps> = 
                 for (let j = 0; j < datesInMs.length; ++j) {
                     const stats = data[i].statistics[parseInt(datesInMs[j])];
 
-                    if (stats.dateInMs in uniqueEntries) {
+                    if (stats && stats.dateInMs in uniqueEntries) {
                         uniqueEntries[stats.dateInMs].confirmed += (stats.confirmed - stats.deaths - stats.recovered);
                         uniqueEntries[stats.dateInMs].deaths += stats.deaths;
                         uniqueEntries[stats.dateInMs].recovered += stats.recovered;
-                    } else {
+                    } else if (stats) {
                         uniqueEntries[stats.dateInMs] = {
                             date: new Date(stats.dateInMs),
                             confirmed: (stats.confirmed - stats.deaths - stats.recovered),
@@ -56,11 +56,11 @@ const HistoricContainerComp: React.StatelessComponent<HistoricContainerProps> = 
             for (let j = 0; j < datesInMs.length; ++j) {
                 const stats = data[i].statistics[parseInt(datesInMs[j])];
 
-                if (stats.dateInMs in uniqueEntries && data[i].country in uniqueEntries[stats.dateInMs]) {
+                if (stats && stats.dateInMs in uniqueEntries && data[i].country in uniqueEntries[stats.dateInMs]) {
                     uniqueEntries[stats.dateInMs][data[i].country] += stats.confirmed;
-                } else if (stats.dateInMs in uniqueEntries && !(data[i].country in uniqueEntries[stats.dateInMs])) {
+                } else if (stats && stats.dateInMs in uniqueEntries && !(data[i].country in uniqueEntries[stats.dateInMs])) {
                     uniqueEntries[stats.dateInMs][data[i].country] = stats.confirmed;
-                } else {
+                } else if (stats) {
                     uniqueEntries[stats.dateInMs] = {
                         date: new Date(stats.dateInMs),
                         [data[i].country]: stats.confirmed
