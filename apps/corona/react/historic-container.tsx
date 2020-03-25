@@ -4,9 +4,10 @@ import { } from 'd3'
 
 import { CrnLocation } from '../classes/location';
 import { CrnTableState } from '../redux/reducers';
-import { OverallGraphEntry, NormalizedGraphEntry } from '../classes/graph';
+import { OverallGraphEntry, NormalizedGraphEntry, GlobalChangeLineGraphData } from '../classes/graph';
 import GlobalOverallGraph from './global-overall-graph';
 import ConfirmedNormalizedArea from './confirmed-normalized-line';
+import GlobalChangeLineGraph from './global-change-line-graph';
 
 interface StateToProps {
     chosenLocation: string;
@@ -74,9 +75,20 @@ const HistoricContainerComp: React.StatelessComponent<HistoricContainerProps> = 
         return entries;
     }
 
+    const rateOfChange = (data: CrnLocation[]): GlobalChangeLineGraphData => {
+        const dates = Object.keys(data[0]?.statistics ?? {}).map(dateInMs => new Date(parseInt(dateInMs)));
+        
+        return {
+            dates,
+            data: []
+        }
+    }
+
 
     return (
         <div className="ui grid">
+            <h2 className="ui center aligned header">Global Daily Rate of Change</h2>
+            <GlobalChangeLineGraph generateDataSet={rateOfChange} />
             <h2 className="ui center aligned header">Global Numbers</h2>
             <GlobalOverallGraph generateDataSet={globalNumbers} />
             <h2 className="ui center aligned header">Normalized Confirmed Cases by Country</h2>

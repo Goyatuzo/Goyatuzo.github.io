@@ -14,5 +14,5 @@ export interface GlobalChangeLineGraphData {
     data: {
         country: string;
         values: number[];
-    }
+    }[]
 }

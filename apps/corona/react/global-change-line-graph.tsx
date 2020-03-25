@@ -43,4 +43,4 @@ const GlobalChangeLineGraph: React.StatelessComponent<ExternalProps> = props => 
     return <BaseD3Graph createChart={createGraph} />
 }
 
-export default ConfirmedNormalizedArea;
+export default GlobalChangeLineGraph;
