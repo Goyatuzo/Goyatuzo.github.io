@@ -4,7 +4,7 @@ import { } from 'd3'
 
 import { CrnLocation } from '../classes/location';
 import { CrnTableState } from '../redux/reducers';
-import { OverallGraphEntry, NormalizedGraphEntry, GlobalChangeLineGraphData } from '../classes/graph';
+import { OverallGraphEntry, NormalizedGraphEntry, GlobalChangeLineGraphData, GlobalChangeLineGraphEntry } from '../classes/graph';
 import GlobalOverallGraph from './global-overall-graph';
 import ConfirmedNormalizedArea from './confirmed-normalized-line';
 import GlobalChangeLineGraph from './global-change-line-graph';
@@ -75,20 +75,48 @@ const HistoricContainerComp: React.StatelessComponent<HistoricContainerProps> = 
         return entries;
     }
 
-    const rateOfChange = (data: CrnLocation[]): GlobalChangeLineGraphData => {
-        const dates = Object.keys(data[0]?.statistics ?? {}).map(dateInMs => new Date(parseInt(dateInMs)));
-        
+    const rateOfChangeConfirmed = (data: CrnLocation[]): GlobalChangeLineGraphData => {
+        const datesInMs = Object.keys(data[0]?.statistics ?? {}).map(num => parseInt(num));
+        const dates = datesInMs.map(dateInMs => new Date(dateInMs));
+
+        let perCountryData: { [countryName: string]: number[] } = {};
+        let _data: GlobalChangeLineGraphEntry[] = [];
+
+        for (let i = 0; i < data.length; ++i) {
+            // Aggregate all rows of the same country together.
+            if (data[i].country in perCountryData) {
+                const existingData = perCountryData[data[i].country];
+                perCountryData[data[i].country] = datesInMs.map((dateInMs, idx) => data[i].statistics[dateInMs].confirmed + existingData[idx])
+            } else {
+                perCountryData[data[i].country] = datesInMs.map(dateInMs => data[i].statistics[dateInMs].confirmed);
+            }
+        }
+
+        const countries = Object.keys(perCountryData);
+        countries.forEach(countryName => {
+            let entry: GlobalChangeLineGraphEntry = {
+                country: countryName,
+                values: perCountryData[countryName].slice(1).map((data, idx) => {
+                    return data - perCountryData[countryName][idx];
+                })
+            }
+
+            _data.push(entry);
+        });
+
+        console.log(_data);
+
         return {
             dates,
-            data: []
+            data: _data
         }
     }
 
 
     return (
         <div className="ui grid">
-            <h2 className="ui center aligned header">Global Daily Rate of Change</h2>
-            <GlobalChangeLineGraph generateDataSet={rateOfChange} />
+            <h2 className="ui center aligned header">Global Daily Confirmed Rate of Change</h2>
+            <GlobalChangeLineGraph generateDataSet={rateOfChangeConfirmed} />
             <h2 className="ui center aligned header">Global Numbers</h2>
             <GlobalOverallGraph generateDataSet={globalNumbers} />
             <h2 className="ui center aligned header">Normalized Confirmed Cases by Country</h2>

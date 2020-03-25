@@ -9,10 +9,12 @@ export interface NormalizedGraphEntry {
     date: Date;
 }
 
+export interface GlobalChangeLineGraphEntry {
+    country: string;
+    values: number[];
+}
+
 export interface GlobalChangeLineGraphData {
     dates: Date[];
-    data: {
-        country: string;
-        values: number[];
-    }[]
+    data: GlobalChangeLineGraphEntry[];
 }
