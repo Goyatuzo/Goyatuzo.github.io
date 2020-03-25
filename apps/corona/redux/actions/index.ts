@@ -60,22 +60,18 @@ function fetchData(preFetchDispatch: () => CrnTableAction, storeDispatch: (value
 }
 
 export function fetchConfirmedData() {
-    return fetchData(requestConfirmedData, storeConfirmedData, `${rootUrl}time_series_19-covid-Confirmed.csv`);
+    return fetchData(requestConfirmedData, storeConfirmedData, `${rootUrl}time_series_covid19_confirmed_global.csv`);
 }
 
 export function fetchDeathsData() {
-    return fetchData(requestDeathsData, storeDeathsData, `${rootUrl}time_series_19-covid-Deaths.csv`)
+    return fetchData(requestDeathsData, storeDeathsData, `${rootUrl}time_series_covid19_deaths_global.csv`)
 }
 
-export function fetchRecoveredData() {
-    return fetchData(requestRecoveredData, storeRecoveredData, `${rootUrl}time_series_19-covid-Recovered.csv`)
-}
 
 export function fetchAllData() {
     return (dispatch: ThunkDispatch<any, any, CrnTableAction>) => {
         dispatch(fetchConfirmedData());
         dispatch(fetchDeathsData());
-        dispatch(fetchRecoveredData());
     }
 }
 
