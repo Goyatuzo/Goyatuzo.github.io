@@ -97,7 +97,9 @@ const HistoricContainerComp: React.StatelessComponent<HistoricContainerProps> = 
             let entry: GlobalChangeLineGraphEntry = {
                 country: countryName,
                 values: perCountryData[countryName].slice(1).map((data, idx) => {
-                    return data - perCountryData[countryName][idx];
+                    const today = data;
+                    const yesterday = perCountryData[countryName][idx];
+                    return (today - yesterday) / (yesterday === 0 ? 1 : yesterday);
                 })
             }
 
