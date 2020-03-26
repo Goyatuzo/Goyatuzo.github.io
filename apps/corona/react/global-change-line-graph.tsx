@@ -2,7 +2,7 @@ import * as React from 'react';
 import { CrnLocation } from '../classes/location';
 import { GlobalChangeLineGraphData } from '../classes/graph';
 import BaseD3Graph, { BaseGraphState } from './base-graph';
-import { select, stack, stackOffsetExpand, scaleUtc, extent, scaleLinear, area, scaleOrdinal, schemeCategory10, axisBottom, axisLeft, max } from 'd3';
+import { select, line, scaleUtc, extent, scaleLinear, area, scaleOrdinal, schemeCategory10, axisBottom, axisLeft, max } from 'd3';
 
 interface ExternalProps {
     generateDataSet: (data: CrnLocation[]) => GlobalChangeLineGraphData;
@@ -22,11 +22,22 @@ const GlobalChangeLineGraph: React.StatelessComponent<ExternalProps> = props => 
             .domain([0, max(series.data, d => max(d.values))]).nice()
             .range([state.height - state.margins.bottom, state.margins.top]);
 
+        const lineData = line<number>()
+            .defined(d => !isNaN(d))
+            .x((d, i) => x(series.dates[i]))
+            .y(d => y(d));
+
         svg.append('g')
-            .selectAll('path')
-            .join('path')
-            .append('title')
-            .text(({ key }) => key);
+            .attr("fill", "none")
+            .attr("stroke", "steelblue")
+            .attr("stroke-width", 1.5)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .selectAll("path")
+            .data(series.data)
+            .join("path")
+            .style("mix-blend-mode", "multiply")
+            .attr("d", d => lineData(d.values));
 
         // x-axis
         svg.append('g')
@@ -38,8 +49,13 @@ const GlobalChangeLineGraph: React.StatelessComponent<ExternalProps> = props => 
         svg.append('g')
             .call(g => g
                 .attr("transform", `translate(${state.margins.left},0)`)
-                .call(axisLeft(y).ticks(10, "%"))
-                .call(g => g.select(".domain").remove()));
+                .call(axisLeft(y))
+                .call(g => g.select(".domain").remove())
+                .call(g => g.select(".tick:last-of-type text").clone()
+                    .attr("x", 3)
+                    .attr("text-anchor", "start")
+                    .attr("font-weight", "bold")
+                    .text("Rate of Change")));
 
     }
 

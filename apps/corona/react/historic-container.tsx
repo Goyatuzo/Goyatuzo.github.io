@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { } from 'd3'
+import { max } from 'd3'
 
 import { CrnLocation } from '../classes/location';
 import { CrnTableState } from '../redux/reducers';
@@ -75,50 +75,58 @@ const HistoricContainerComp: React.StatelessComponent<HistoricContainerProps> = 
         return entries;
     }
 
-    const rateOfChangeConfirmed = (data: CrnLocation[]): GlobalChangeLineGraphData => {
-        const datesInMs = Object.keys(data[0]?.statistics ?? {}).map(num => parseInt(num));
-        const dates = datesInMs.map(dateInMs => new Date(dateInMs));
+    // const rateOfChangeConfirmed = (data: CrnLocation[]): GlobalChangeLineGraphData => {
+    //     const datesInMs = Object.keys(data[0]?.statistics ?? {}).map(num => parseInt(num));
+    //     const dates = datesInMs.map(dateInMs => new Date(dateInMs));
 
-        let perCountryData: { [countryName: string]: number[] } = {};
-        let _data: GlobalChangeLineGraphEntry[] = [];
+    //     let perCountryData: { [countryName: string]: number[] } = {};
+    //     let _data: GlobalChangeLineGraphEntry[] = [];
 
-        for (let i = 0; i < data.length; ++i) {
-            // Aggregate all rows of the same country together.
-            if (data[i].country in perCountryData) {
-                const existingData = perCountryData[data[i].country];
-                perCountryData[data[i].country] = datesInMs.map((dateInMs, idx) => data[i].statistics[dateInMs].confirmed + existingData[idx])
-            } else {
-                perCountryData[data[i].country] = datesInMs.map(dateInMs => data[i].statistics[dateInMs].confirmed);
-            }
-        }
+    //     for (let i = 0; i < data.length; ++i) {
+    //         // Aggregate all rows of the same country together.
+    //         if (data[i].country in perCountryData) {
+    //             const existingData = perCountryData[data[i].country];
+    //             perCountryData[data[i].country] = datesInMs.map((dateInMs, idx) => data[i].statistics[dateInMs].confirmed + existingData[idx])
+    //         } else {
+    //             perCountryData[data[i].country] = datesInMs.map(dateInMs => data[i].statistics[dateInMs].confirmed);
+    //         }
+    //     }
 
-        const countries = Object.keys(perCountryData);
-        countries.forEach(countryName => {
-            let entry: GlobalChangeLineGraphEntry = {
-                country: countryName,
-                values: perCountryData[countryName].slice(1).map((data, idx) => {
-                    const today = data;
-                    const yesterday = perCountryData[countryName][idx];
-                    return (today - yesterday) / (yesterday === 0 ? 1 : yesterday);
-                })
-            }
+    //     const countries = Object.keys(perCountryData);
+    //     countries.forEach(countryName => {
+    //         let entry: GlobalChangeLineGraphEntry = {
+    //             country: countryName,
+    //             values: perCountryData[countryName].slice(1).map((data, idx) => {
+    //                 const today = data;
+    //                 const yesterday = perCountryData[countryName][idx];
 
-            _data.push(entry);
-        });
+    //                 const rate = (today - yesterday) / (yesterday === 0 ? today : yesterday);
+    //                 if (rate > 5) {
+    //                     return 5;
+    //                 } else
+    //                     return (today - yesterday) / (yesterday === 0 ? today : yesterday);
+    //             })
+    //         }
 
-        console.log(_data);
+    //         _data.push(entry);
+    //     });
 
-        return {
-            dates,
-            data: _data
-        }
-    }
+    //     _data.forEach(item => {
+    //         if (item.country === "Andorra") {
+    //             console.log(item.country);
+    //             console.log(item.values);
+    //         }
+    //     })
+
+    //     return {
+    //         dates,
+    //         data: _data
+    //     }
+    // }
 
 
     return (
         <div className="ui grid">
-            <h2 className="ui center aligned header">Global Daily Confirmed Rate of Change</h2>
-            <GlobalChangeLineGraph generateDataSet={rateOfChangeConfirmed} />
             <h2 className="ui center aligned header">Global Numbers</h2>
             <GlobalOverallGraph generateDataSet={globalNumbers} />
             <h2 className="ui center aligned header">Normalized Confirmed Cases by Country</h2>
