@@ -8,3 +8,13 @@ export interface OverallGraphEntry {
 export interface NormalizedGraphEntry {
     date: Date;
 }
+
+export interface GlobalChangeLineGraphEntry {
+    country: string;
+    values: number[];
+}
+
+export interface GlobalChangeLineGraphData {
+    dates: Date[];
+    data: GlobalChangeLineGraphEntry[];
+}

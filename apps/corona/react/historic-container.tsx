@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { } from 'd3'
 
 import { CrnLocation } from '../classes/location';
 import { CrnTableState } from '../redux/reducers';
@@ -27,11 +26,11 @@ const HistoricContainerComp: React.StatelessComponent<HistoricContainerProps> = 
                 for (let j = 0; j < datesInMs.length; ++j) {
                     const stats = data[i].statistics[parseInt(datesInMs[j])];
 
-                    if (stats && stats.dateInMs in uniqueEntries) {
+                    if (stats.dateInMs in uniqueEntries) {
                         uniqueEntries[stats.dateInMs].confirmed += (stats.confirmed - stats.deaths - stats.recovered);
                         uniqueEntries[stats.dateInMs].deaths += stats.deaths;
                         uniqueEntries[stats.dateInMs].recovered += stats.recovered;
-                    } else if (stats) {
+                    } else {
                         uniqueEntries[stats.dateInMs] = {
                             date: new Date(stats.dateInMs),
                             confirmed: (stats.confirmed - stats.deaths - stats.recovered),
@@ -56,11 +55,11 @@ const HistoricContainerComp: React.StatelessComponent<HistoricContainerProps> = 
             for (let j = 0; j < datesInMs.length; ++j) {
                 const stats = data[i].statistics[parseInt(datesInMs[j])];
 
-                if (stats && stats.dateInMs in uniqueEntries && data[i].country in uniqueEntries[stats.dateInMs]) {
+                if (stats.dateInMs in uniqueEntries && data[i].country in uniqueEntries[stats.dateInMs]) {
                     uniqueEntries[stats.dateInMs][data[i].country] += stats.confirmed;
-                } else if (stats && stats.dateInMs in uniqueEntries && !(data[i].country in uniqueEntries[stats.dateInMs])) {
+                } else if (stats.dateInMs in uniqueEntries && !(data[i].country in uniqueEntries[stats.dateInMs])) {
                     uniqueEntries[stats.dateInMs][data[i].country] = stats.confirmed;
-                } else if (stats) {
+                } else {
                     uniqueEntries[stats.dateInMs] = {
                         date: new Date(stats.dateInMs),
                         [data[i].country]: stats.confirmed
@@ -73,6 +72,55 @@ const HistoricContainerComp: React.StatelessComponent<HistoricContainerProps> = 
 
         return entries;
     }
+
+    // const rateOfChangeConfirmed = (data: CrnLocation[]): GlobalChangeLineGraphData => {
+    //     const datesInMs = Object.keys(data[0]?.statistics ?? {}).map(num => parseInt(num));
+    //     const dates = datesInMs.map(dateInMs => new Date(dateInMs));
+
+    //     let perCountryData: { [countryName: string]: number[] } = {};
+    //     let _data: GlobalChangeLineGraphEntry[] = [];
+
+    //     for (let i = 0; i < data.length; ++i) {
+    //         // Aggregate all rows of the same country together.
+    //         if (data[i].country in perCountryData) {
+    //             const existingData = perCountryData[data[i].country];
+    //             perCountryData[data[i].country] = datesInMs.map((dateInMs, idx) => data[i].statistics[dateInMs].confirmed + existingData[idx])
+    //         } else {
+    //             perCountryData[data[i].country] = datesInMs.map(dateInMs => data[i].statistics[dateInMs].confirmed);
+    //         }
+    //     }
+
+    //     const countries = Object.keys(perCountryData);
+    //     countries.forEach(countryName => {
+    //         let entry: GlobalChangeLineGraphEntry = {
+    //             country: countryName,
+    //             values: perCountryData[countryName].slice(1).map((data, idx) => {
+    //                 const today = data;
+    //                 const yesterday = perCountryData[countryName][idx];
+
+    //                 const rate = (today - yesterday) / (yesterday === 0 ? today : yesterday);
+    //                 if (rate > 5) {
+    //                     return 5;
+    //                 } else
+    //                     return (today - yesterday) / (yesterday === 0 ? today : yesterday);
+    //             })
+    //         }
+
+    //         _data.push(entry);
+    //     });
+
+    //     _data.forEach(item => {
+    //         if (item.country === "Andorra") {
+    //             console.log(item.country);
+    //             console.log(item.values);
+    //         }
+    //     })
+
+    //     return {
+    //         dates,
+    //         data: _data
+    //     }
+    // }
 
 
     return (

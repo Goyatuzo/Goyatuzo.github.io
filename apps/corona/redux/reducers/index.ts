@@ -39,7 +39,8 @@ function updateField(locations: CrnLocation[], data: DSVRowArray, fieldToUpdate:
             const dateTokens = headers[j].split('/').map(tkn => parseInt(tkn));
 
             const date = new Date(parseInt(`20${dateTokens[2]}`), dateTokens[0] - 1, dateTokens[1]);
-            if (!newLocation.statistics[date.getTime()] && data[i][headers[j]] !== "") {
+            // If the date has not been processed before, initialize.
+            if (!newLocation.statistics[date.getTime()]) {
                 newLocation.statistics[date.getTime()] = {
                     dateInMs: date.getTime(),
                     deaths: 0,
@@ -48,8 +49,12 @@ function updateField(locations: CrnLocation[], data: DSVRowArray, fieldToUpdate:
                 }
             }
 
-            if (newLocation.statistics[date.getTime()] && data[i][headers[j]] !== "") {
+            // Sometimes the most recent date has some empty values, if it's empty, set to 0
+            if (data[i][headers[j]] !== "") {
                 newLocation.statistics[date.getTime()][fieldToUpdate] = parseInt(data[i][headers[j]] ?? '0') || 0;
+
+            } else {
+                newLocation.statistics[date.getTime()][fieldToUpdate] = 0;
             }
         }
 
