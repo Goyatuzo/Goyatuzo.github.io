@@ -1,13 +1,11 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { max } from 'd3'
 
 import { CrnLocation } from '../classes/location';
 import { CrnTableState } from '../redux/reducers';
-import { OverallGraphEntry, NormalizedGraphEntry, GlobalChangeLineGraphData, GlobalChangeLineGraphEntry } from '../classes/graph';
+import { OverallGraphEntry, NormalizedGraphEntry } from '../classes/graph';
 import GlobalOverallGraph from './global-overall-graph';
 import ConfirmedNormalizedArea from './confirmed-normalized-line';
-import GlobalChangeLineGraph from './global-change-line-graph';
 
 interface StateToProps {
     chosenLocation: string;
