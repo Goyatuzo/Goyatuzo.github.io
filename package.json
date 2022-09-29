@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/Goyatuzo/goyatuzo.github.io#readme",
   "dependencies": {
-    "d3": "5.15.0",
+    "d3": "7.6.1",
     "es6-promise": "4.2.8",
     "react": "16.13.0",
     "react-dom": "16.13.0",
